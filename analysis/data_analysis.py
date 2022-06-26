@@ -42,13 +42,14 @@ fuel_data_harvest_sum = (fuel_data_harvest.groupby(by=['state', 'lga', 'hhid'])
 
 #%%
 ### estimate co2 emission for petrol at household level
-petrol_data_harvet_CO2emission = (fuel_data_harvest_sum >> dplyr.select(f[0:3], f.PETROL) >>
-                            dplyr.mutate(petrol_total_expend = f.PETROL,
-                                         price_per_ltr = 87, 
-                                         total_ltr_consumed = (f.petrol_total_expend / f.price_per_ltr), 
-                                         GHG_emission_factor_CO2 = 2.31,
-                                         total_CO2_produced_kg = (f.total_ltr_consumed * f.GHG_emission_factor_CO2)
-                                         )
+petrol_data_harvet_CO2emission = (fuel_data_harvest_sum >> 
+                                  dplyr.select(f[0:3], f.PETROL) >>
+                                    dplyr.mutate(petrol_total_expend = f.PETROL,
+                                                price_per_ltr = 87, 
+                                                total_ltr_consumed = (f.petrol_total_expend / f.price_per_ltr), 
+                                                GHG_emission_factor_CO2 = 2.31,
+                                                total_CO2_produced_kg = (f.total_ltr_consumed * f.GHG_emission_factor_CO2)
+                                                )
                             )
 
 #%%
@@ -76,6 +77,42 @@ lpgas_data_harvest_CO2emission = (fuel_data_harvest_sum >>
                                                 )
                                 )
 
+#%%
+### estimate co2 emission for electricity at household level
+electricity_data_harvest_CO2emission = (fuel_data_harvest_sum >> 
+                                        dplyr.select(f[0:3], f.ELECTRICITY) >>
+                                        dplyr.mutate(electricity_total_expend = f.ELECTRICITY, 
+                                                    price_per_KWh = 29, 
+                                                    total_KWh_consumed = (f.electricity_total_expend/f.price_per_KWh),
+                                                    GHG_emission_factor_CO2 = 0.4034043, 
+                                                    total_CO2_consumed_kg = (f.total_KWh_consumed * f.GHG_emission_factor_CO2)
+                                                    )
+                                     )
+
+#%%
+## estimate co2 emission for charcoal at household level
+charcoal_data_harvest_co2emission = (fuel_data_harvest_sum >> dplyr.select(f[0:3], f.CHARCOAL) >>
+                                                            dplyr.mutate(charcoal_total_expend = f.CHARCOAL, 
+                                                                        price_per_kg = 13.542815, 
+                                                                        total_kg_consumed = (f.charcoal_total_expend/f.price_per_kg),
+                                                                        convert_kg_to_tonnes = 0.001,
+                                                                        total_tonn_consumed = (f.total_kg_consumed * f.convert_kg_to_tonnes),
+                                                                        GHG_emission_factor_CO2 = 3304,
+                                                                        total_CO2_consumed_kg = (f.total_tonn_consumed * f.GHG_emission_factor_CO2))
+                                                                
+                                )
+
+#%%
+## ESTIMATE CO2 EMSSIONS FOR DIESIEL 
+diesel_data_harvest_co2emission = (fuel_data_harvest_sum >> 
+                                   dplyr.select(f[0:3], f.DIESEL) >>
+                                    dplyr.mutate(diesel_total_expend = f.DIESEL, 
+                                                price_per_ltr = 145, 
+                                                total_ltr_consumed = (f.diesel_total_expend / f.price_per_ltr),
+                                                GHG_emission_factor_CO2kg_per_ltr = 2.676492,
+                                                total_CO2_consumed_kg = (f.total_ltr_consumed * f.GHG_emission_factor_CO2kg_per_ltr)
+                                            )
+                                 )
 
 
 
@@ -84,3 +121,5 @@ lpgas_data_harvest_CO2emission = (fuel_data_harvest_sum >>
 
 
 
+
+# %%
