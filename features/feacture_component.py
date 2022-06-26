@@ -4,7 +4,7 @@ from style_display.style import homepage_icon_style
 
 
 
-def CardButton(cardimg_style: dict = homepage_icon_style,
+def CardButton(cardimg_src: str = None, cardimg_style: dict = homepage_icon_style,
                card_title: str = 'Card Title',
                cardlink_href: str = "card_href",
                headstyle: dict = {"margin": "5%"},
@@ -14,6 +14,7 @@ def CardButton(cardimg_style: dict = homepage_icon_style,
                             dbc.Card(
                                 [
                                     dbc.CardImg(
+                                        src = cardimg_src,
                                         style=cardimg_style,
                                     ),
                                     dbc.CardLink(
