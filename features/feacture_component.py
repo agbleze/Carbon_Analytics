@@ -6,7 +6,9 @@ from style_display.style import homepage_icon_style
 
 def CardButton(cardimg_style: dict = homepage_icon_style,
                card_title: str = 'Card Title',
-               cardlink_href="card_href"):
+               cardlink_href: str = "card_href",
+               headstyle: dict = {"margin": "5%"},
+               card_style: dict = {"width": "18rem", "height": "18rem"}):
     return dbc.Col(
                         [
                             dbc.Card(
@@ -21,7 +23,7 @@ def CardButton(cardimg_style: dict = homepage_icon_style,
                                                     dbc.CardBody(
                                                         html.H3(
                                                             children=card_title,
-                                                            style={"margin": "5%"},
+                                                            style=headstyle,
                                                         )
                                                     )
                                                 ]
@@ -30,7 +32,7 @@ def CardButton(cardimg_style: dict = homepage_icon_style,
                                         href=cardlink_href,
                                     ),
                                 ],
-                                style={"width": "18rem", "height": "18rem"},
+                                style= card_style,
                             )
                         ]
                     )
