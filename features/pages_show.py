@@ -3,6 +3,7 @@ import dash_trich_components as dtc
 from dash import dcc
 import dash_bootstrap_components as dbc
 from dash import html
+from helper_components import output_card
 
 #%%
 card_icon = {
@@ -12,214 +13,55 @@ card_icon = {
     "margin": "auto",
 }
 
+cardstyling = {"maxWidth": 195,
+                    "backgroundColor": "#e4ac23",
+                }
+output_card(id = "total_client", 
+            card_label="Total clients", 
+            icon="bi bi-people-fill",
+            style=cardstyling
+            )
 portfolio = html.Div(
     [
         dbc.Container(
             [
                 dbc.Row(
                     [
-                        dbc.Col(
-                            [
-                                dbc.CardGroup(
-                                    [
-                                        dbc.Card(
-                                            dbc.CardBody(
-                                                [
-                                                    html.H2(
-                                                        id="total_client",
-                                                        className="card-title",
-                                                    ),
-                                                    html.P(
-                                                        "Total clients",
-                                                        className="card-text",
-                                                    ),
-                                                ]
-                                            )
-                                        ),
-                                        dbc.Card(
-                                            html.Div(
-                                                className="bi bi-people-fill",
-                                                style=card_icon,
-                                            ),
-                                            style={
-                                                "maxWidth": 195,
-                                                "backgroundColor": "#e4ac23",
-                                            },
-                                        ),
-                                    ]
-                                )
-                            ]
-                        ),
-                        ## Number of buildings
-                        dbc.Col(
-                            [
-                                dbc.CardGroup(
-                                    [
-                                        dbc.Card(
-                                            dbc.CardBody(
-                                                [
-                                                    html.H2(
-                                                        id="total_building",
-                                                        className="card-title",
-                                                    ),
-                                                    html.P(
-                                                        "Total building",
-                                                        className="card-text",
-                                                    ),
-                                                ]
-                                            )
-                                        ),
-                                        dbc.Card(
-                                            html.Div(
-                                                className="bi bi-house-fill",
-                                                style=card_icon,
-                                            ),
-                                            style={
-                                                "maxWidth": 195,
-                                                "backgroundColor": "#e4ac23",
-                                            },
-                                        ),
-                                    ]
-                                )
-                            ]
-                        ),
-                        ## Total area of buildings
-                        dbc.Col(
-                            [
-                                dbc.CardGroup(
-                                    [
-                                        dbc.Card(
-                                            dbc.CardBody(
-                                                [
-                                                    html.H3(
-                                                        id="total_building_area",
-                                                        className="card-title",
-                                                    ),
-                                                    html.P(
-                                                        "Total building Area (square meters)",
-                                                        className="card-text",
-                                                    ),
-                                                ]
-                                            )
-                                        ),
-                                        dbc.Card(
-                                            html.Div(
-                                                className="bi bi-building",
-                                                style=card_icon,
-                                            ),
-                                            style={
-                                                "maxWidth": 195,
-                                                "backgroundColor": "#e4ac23",
-                                            },
-                                        ),
-                                    ]
-                                )
-                            ]
-                        ),
+                        output_card(id = "total_client", 
+                                    card_label="Total clients", 
+                                    icon="bi bi-people-fill",
+                                    style=cardstyling
+                                    ),
+                        output_card(id = "total_building", 
+                                    card_label="Total building", 
+                                    icon="bi bi-house-fill",
+                                    style=cardstyling
+                                    ),
+                        output_card(id = "total_building_area", 
+                                    card_label="Total building Area (square meters)", 
+                                    icon="bi bi-building",
+                                    style=cardstyling
+                                    )                        
                     ]
                 ),
                 html.Br(), html.Br(),
                 dbc.Row(
                     [
-                        ## Average area of buildings
-                        dbc.Col(
-                            [
-                                dbc.CardGroup(
-                                    [
-                                        dbc.Card(
-                                            dbc.CardBody(
-                                                [
-                                                    html.H3(
-                                                        id="average_building_area",
-                                                        className="card-title",
-                                                    ),
-                                                    html.P(
-                                                        "Average building Area (square meters)",
-                                                        className="card-text",
-                                                    ),
-                                                ]
-                                            )
-                                        ),
-                                        dbc.Card(
-                                            html.Div(
-                                                className="bi bi-bank2",
-                                                style=card_icon,
-                                            ),
-                                            style={
-                                                "maxWidth": 195,
-                                                "backgroundColor": "#e4ac23",
-                                            },
-                                        ),
-                                    ]
-                                )
-                            ]
-                        ),
-                        ## Number of countries
-                        dbc.Col(
-                            [
-                                dbc.CardGroup(
-                                    [
-                                        dbc.Card(
-                                            dbc.CardBody(
-                                                [
-                                                    html.H2(
-                                                        id="total_countries",
-                                                        className="card-title",
-                                                    ),
-                                                    html.P(
-                                                        "Total countries operated in",
-                                                        className="card-text",
-                                                    ),
-                                                ]
-                                            )
-                                        ),
-                                        dbc.Card(
-                                            html.Div(
-                                                className="bi bi-geo-alt-fill",
-                                                style=card_icon,
-                                            ),
-                                            style={
-                                                "maxWidth": 195,
-                                                "backgroundColor": "#e4ac23",
-                                            },
-                                        ),
-                                    ]
-                                )
-                            ]
-                        ),
-                        ## Number of cities operated in
-                        dbc.Col(
-                            [
-                                dbc.CardGroup(
-                                    [
-                                        dbc.Card(
-                                            dbc.CardBody(
-                                                [
-                                                    html.H2(
-                                                        id="total_cities",
-                                                        className="card-title",
-                                                    ),
-                                                    html.P(
-                                                        "Total number of cities operated in",
-                                                        className="card-text",
-                                                    ),
-                                                ]
-                                            )
-                                        ),
-                                        dbc.Card(
-                                            html.Div(
-                                                className="bi bi-geo-fill",
-                                                style=card_icon,
-                                            ),
-                                            style={
-                                                "maxWidth": 195,
-                                                "backgroundColor": "#e4ac23",
-                                            },
-                                        ),
-                                    ]
-                                )
-                            ]
-                        ),
+                        output_card(id = "average_building_area", 
+                                    card_label="Average building Area (square meters)", 
+                                    icon="bi bi-bank2",
+                                    style=cardstyling
+                                    ),
+                        output_card(id="total_countries", 
+                                    card_label="Total countries operated in", 
+                                    icon="bi bi-geo-alt-fill",
+                                    style=cardstyling
+                                    ),
+                        output_card(id="total_cities", 
+                                    card_label="Total number of cities operated in", 
+                                    icon="bi bi-geo-fill",
+                                    style=cardstyling
+                                    )                       
                     ]
                 ),
             ]
@@ -243,191 +85,41 @@ client_dashboard = html.Div(
                             children=[
                                 dbc.Row(
                                     [
-                                        dbc.Col(
-                                            dbc.CardGroup(
-                                                [
-                                                    dbc.Card(
-                                                        dbc.CardBody(
-                                                            [
-                                                                html.H3(
-                                                                    id="client_total_building",
-                                                                    className="card-title",
-                                                                ),
-                                                                html.P(
-                                                                    "Total building",
-                                                                    className="card-text",
-                                                                ),
-                                                            ]
-                                                        )
+                                        output_card(id="client_total_building", 
+                                                    card_label="Total number of cities operated in", 
+                                                    icon="bi bi-geo-fill",
+                                                    style=cardstyling
                                                     ),
-                                                    dbc.Card(
-                                                        html.Div(
-                                                            className="bi bi-house-fill",
-                                                            style=card_icon,
-                                                        ),
-                                                        style={
-                                                            "maxWidth": 195,
-                                                            "backgroundColor": "#e4ac23",
-                                                        },
+                                        output_card(id="client_total_building_area", 
+                                                    card_label="Total number of cities operated in", 
+                                                    icon="bi bi-geo-fill",
+                                                    style=cardstyling
                                                     ),
-                                                ]
-                                            )
-                                        ),
-                                        dbc.Col(
-                                            dbc.CardGroup(
-                                                [
-                                                    dbc.Card(
-                                                        dbc.CardBody(
-                                                            [
-                                                                html.H3(
-                                                                    id="client_total_building_area",
-                                                                    className="card-title",
-                                                                ),
-                                                                html.P(
-                                                                    "Total building Area (square meters)",
-                                                                    className="card-text",
-                                                                ),
-                                                            ]
-                                                        )
-                                                    ),
-                                                    dbc.Card(
-                                                        html.Div(
-                                                            className="bi bi-building",
-                                                            style=card_icon,
-                                                        ),
-                                                        style={
-                                                            "maxWidth": 195,
-                                                            "backgroundColor": "#e4ac23",
-                                                        },
-                                                    ),
-                                                ]
-                                            )
-                                        ),
-                                        dbc.Col(
-                                            dbc.CardGroup(
-                                                [
-                                                    dbc.Card(
-                                                        dbc.CardBody(
-                                                            [
-                                                                html.H3(
-                                                                    id="client_average_building_area",
-                                                                    className="card-title",
-                                                                ),
-                                                                html.P(
-                                                                    "Average building Area (square meters)",
-                                                                    className="card-text",
-                                                                ),
-                                                            ]
-                                                        )
-                                                    ),
-                                                    dbc.Card(
-                                                        html.Div(
-                                                            className="bi bi-box",
-                                                            style=card_icon,
-                                                        ),
-                                                        style={
-                                                            "maxWidth": 195,
-                                                            "backgroundColor": "#e4ac23",
-                                                        },
-                                                    ),
-                                                ]
-                                            )
-                                        ),
+                                        output_card(id="client_average_building_area", 
+                                                    card_label="Total number of cities operated in", 
+                                                    icon="bi bi-geo-fill",
+                                                    style=cardstyling
+                                                    )
                                     ]
                                 ),
                                 html.Br(),
                                 dbc.Row(
                                     [
-                                        dbc.Col(
-                                            dbc.CardGroup(
-                                                [
-                                                    dbc.Card(
-                                                        dbc.CardBody(
-                                                            [
-                                                                html.H3(
-                                                                    id="client_total_points",
-                                                                    className="card-title",
-                                                                ),
-                                                                html.P(
-                                                                    "Total Equipment Points",
-                                                                    className="card-text",
-                                                                ),
-                                                            ]
-                                                        )
+                                        output_card(id="client_total_points", 
+                                                    card_label="Total Equipment Points", 
+                                                    icon="bi bi-file-easel-fill",
+                                                    style=cardstyling
                                                     ),
-                                                    dbc.Card(
-                                                        html.Div(
-                                                            className="bi bi-file-easel-fill",
-                                                            style=card_icon,
-                                                        ),
-                                                        style={
-                                                            "maxWidth": 195,
-                                                            "backgroundColor": "#e4ac23",
-                                                        },
+                                        output_card(id="client_total_equipment", 
+                                                    card_label="Total Equipment", 
+                                                    icon="bi bi-cpu-fill",
+                                                    style=cardstyling
                                                     ),
-                                                ]
-                                            )
-                                        ),
-                                        dbc.Col(
-                                            dbc.CardGroup(
-                                                [
-                                                    dbc.Card(
-                                                        dbc.CardBody(
-                                                            [
-                                                                html.H3(
-                                                                    id="client_total_equipment",
-                                                                    className="card-title",
-                                                                ),
-                                                                html.P(
-                                                                    "Total Equipment",
-                                                                    className="card-text",
-                                                                ),
-                                                            ]
-                                                        )
-                                                    ),
-                                                    dbc.Card(
-                                                        html.Div(
-                                                            className="bi bi-cpu-fill",
-                                                            style=card_icon,
-                                                        ),
-                                                        style={
-                                                            "maxWidth": 195,
-                                                            "backgroundColor": "#e4ac23",
-                                                        },
-                                                    ),
-                                                ]
-                                            )
-                                        ),
-                                        dbc.Col(
-                                            dbc.CardGroup(
-                                                [
-                                                    dbc.Card(
-                                                        dbc.CardBody(
-                                                            [
-                                                                html.H3(
-                                                                    id="client_total_rooms",
-                                                                    className="card-title",
-                                                                ),
-                                                                html.P(
-                                                                    "Total rooms",
-                                                                    className="card-text",
-                                                                ),
-                                                            ]
-                                                        )
-                                                    ),
-                                                    dbc.Card(
-                                                        html.Div(
-                                                            className="bi bi-door-closed",
-                                                            style=card_icon,
-                                                        ),
-                                                        style={
-                                                            "maxWidth": 195,
-                                                            "backgroundColor": "#e4ac23",
-                                                        },
-                                                    ),
-                                                ]
-                                            )
-                                        ),
+                                        output_card(id="client_total_rooms", 
+                                                    card_label="Total rooms", 
+                                                    icon="bi bi-door-closed",
+                                                    style=cardstyling
+                                                    )
                                     ]
                                 ),
                             ],
@@ -469,131 +161,31 @@ content_3 = html.Div(
                     children=[
                         dbc.Row(
                             [
-                                dbc.Col(
-                                    dbc.CardGroup(
-                                        [
-                                            dbc.Card(
-                                                dbc.CardBody(
-                                                    [
-                                                        html.H3(
-                                                            id="bs_total_clients",
-                                                            className="card-title",
-                                                        ),
-                                                        html.P(
-                                                            "Total Clients",
-                                                            className="card-text",
-                                                        ),
-                                                    ]
-                                                )
+                                 output_card(id="bs_total_clients", 
+                                            card_label="Total Clients", 
+                                            icon="bi bi-people-fill",
+                                            style=cardstyling
                                             ),
-                                            dbc.Card(
-                                                html.Div(
-                                                    className="bi bi-people-fill",
-                                                    style=card_icon,
-                                                ),
-                                                style={
-                                                    "maxWidth": 195,
-                                                    "backgroundColor": "#e4ac23",
-                                                },
+                                 output_card(id="bs_total_buildings", 
+                                            card_label="Total Buildings", 
+                                            icon="bi bi-house-fill",
+                                            style=cardstyling
                                             ),
-                                        ]
-                                    )
-                                ),
-                                dbc.Col(
-                                    dbc.CardGroup(
-                                        [
-                                            dbc.Card(
-                                                dbc.CardBody(
-                                                    [
-                                                        html.H3(
-                                                            id="bs_total_buildings",
-                                                            className="card-title",
-                                                        ),
-                                                        html.P(
-                                                            "Total Buildings",
-                                                            className="card-text",
-                                                        ),
-                                                    ]
-                                                )
-                                            ),
-                                            dbc.Card(
-                                                html.Div(
-                                                    className="bi bi-house-fill",
-                                                    style=card_icon,
-                                                ),
-                                                style={
-                                                    "maxWidth": 195,
-                                                    "backgroundColor": "#e4ac23",
-                                                },
-                                            ),
-                                        ]
-                                    )
-                                ),
-                                dbc.Col(
-                                    dbc.CardGroup(
-                                        [
-                                            dbc.Card(
-                                                dbc.CardBody(
-                                                    [
-                                                        html.H3(
-                                                            id="bs_total_equipments",
-                                                            className="card-title",
-                                                        ),
-                                                        html.P(
-                                                            "Total Equipments",
-                                                            className="card-text",
-                                                        ),
-                                                    ]
-                                                )
-                                            ),
-                                            dbc.Card(
-                                                html.Div(
-                                                    className="bi bi-cpu-fill",
-                                                    style=card_icon,
-                                                ),
-                                                style={
-                                                    "maxWidth": 195,
-                                                    "backgroundColor": "#e4ac23",
-                                                },
-                                            ),
-                                        ]
-                                    )
-                                ),
+                                 output_card(id="bs_total_equipments", 
+                                            card_label="Total Equipments", 
+                                            icon="bi bi-cpu-fill",
+                                            style=cardstyling
+                                            )
                             ]
                         ),
                         html.Br(),
                         dbc.Row(
                             [
-                                dbc.Col(
-                                    dbc.CardGroup(
-                                        [
-                                            dbc.Card(
-                                                dbc.CardBody(
-                                                    [
-                                                        html.H3(
-                                                            id="bs_total_equipment_points",
-                                                            className="card-title",
-                                                        ),
-                                                        html.P(
-                                                            "Total Equipment Points",
-                                                            className="card-text",
-                                                        ),
-                                                    ]
-                                                )
-                                            ),
-                                            dbc.Card(
-                                                html.Div(
-                                                    className="bi bi-grid-3x3-gap",
-                                                    style=card_icon,
-                                                ),
-                                                style={
-                                                    "maxWidth": 195,
-                                                    "backgroundColor": "#e4ac23",
-                                                },
-                                            ),
-                                        ]
-                                    )
-                                )
+                                output_card(id="bs_total_equipment_points", 
+                                            card_label="Total Equipment Points",
+                                            icon="bi bi-grid-3x3-gap",
+                                            style=cardstyling
+                                            )
                             ]
                         ),
                     ],
@@ -702,191 +294,32 @@ device_gateway_dashboard = html.Div(
                             children=[
                                 dbc.Row(
                                     [
-                                        dbc.Col(
-                                            dbc.CardGroup(
-                                                [
-                                                    dbc.Card(
-                                                        dbc.CardBody(
-                                                            [
-                                                                html.H3(
-                                                                    id="building_total_gateway",
-                                                                    className="card-title",
-                                                                ),
-                                                                html.P(
-                                                                    "Number of ENVIO Gateways",
-                                                                    className="card-text",
-                                                                ),
-                                                            ]
-                                                        )
+                                        output_card(id="building_total_gateway", 
+                                                    card_label="Number of ENVIO Gateways",
+                                                    icon="bi bi-grid-3x3-gap",
+                                                    style=cardstyling
                                                     ),
-                                                    dbc.Card(
-                                                        html.Div(
-                                                            className="bi bi-house-fill",
-                                                            style=card_icon,
-                                                        ),
-                                                        style={
-                                                            "maxWidth": 195,
-                                                            "backgroundColor": "#e4ac23",
-                                                        },
+                                        output_card(id="total_building_devices", 
+                                                    card_label="Total building Devices",
+                                                    icon="bi bi-building",
+                                                    style=cardstyling
                                                     ),
-                                                ]
-                                            )
-                                        ),
-                                        dbc.Col(
-                                            dbc.CardGroup(
-                                                [
-                                                    dbc.Card(
-                                                        dbc.CardBody(
-                                                            [
-                                                                html.H3(
-                                                                    id="total_building_devices",
-                                                                    className="card-title",
-                                                                ),
-                                                                html.P(
-                                                                    "Total building Devices",
-                                                                    className="card-text",
-                                                                ),
-                                                            ]
-                                                        )
-                                                    ),
-                                                    dbc.Card(
-                                                        html.Div(
-                                                            className="bi bi-building",
-                                                            style=card_icon,
-                                                        ),
-                                                        style={
-                                                            "maxWidth": 195,
-                                                            "backgroundColor": "#e4ac23",
-                                                        },
-                                                    ),
-                                                ]
-                                            )
-                                        ),
-                                        dbc.Col(
-                                            dbc.CardGroup(
-                                                [
-                                                    dbc.Card(
-                                                        dbc.CardBody(
-                                                            [
-                                                                html.H3(
-                                                                    id="gateway_per_unit_area",
-                                                                    className="card-title",
-                                                                ),
-                                                                html.P(
-                                                                    "Gateway per Unit Area",
-                                                                    className="card-text",
-                                                                ),
-                                                            ]
-                                                        )
-                                                    ),
-                                                    dbc.Card(
-                                                        html.Div(
-                                                            className="bi bi-box",
-                                                            style=card_icon,
-                                                        ),
-                                                        style={
-                                                            "maxWidth": 195,
-                                                            "backgroundColor": "#e4ac23",
-                                                        },
-                                                    ),
-                                                ]
-                                            )
-                                        ),
+                                        output_card(id="gateway_per_unit_area", 
+                                                    card_label="Gateway per Unit Area",
+                                                    icon="bi bi-building",
+                                                    style=cardstyling
+                                                    )
                                     ]
                                 ),
                                 html.Br(),
                                 dbc.Row(
                                     [
-                                        dbc.Col(
-                                            dbc.CardGroup(
-                                                [
-                                                    dbc.Card(
-                                                        dbc.CardBody(
-                                                            [
-                                                                html.H3(
-                                                                    id="device_per_unit_area",
-                                                                    className="card-title",
-                                                                ),
-                                                                html.P(
-                                                                    "Device per unit Area",
-                                                                    className="card-text",
-                                                                ),
-                                                            ]
-                                                        )
-                                                    ),
-                                                    dbc.Card(
-                                                        html.Div(
-                                                            className="bi bi-file-easel-fill",
-                                                            style=card_icon,
-                                                        ),
-                                                        style={
-                                                            "maxWidth": 195,
-                                                            "backgroundColor": "#e4ac23",
-                                                        },
-                                                    ),
-                                                ]
-                                            )
-                                        )
-                                        # dbc.Col(
-                                        #     dbc.CardGroup(
-                                        #         [
-                                        #             dbc.Card(
-                                        #                 dbc.CardBody(
-                                        #                     [
-                                        #                         html.H3(
-                                        #                             id="client_total_equipment",
-                                        #                             className="card-title",
-                                        #                         ),
-                                        #                         html.P(
-                                        #                             "Total Equipment",
-                                        #                             className="card-text",
-                                        #                         ),
-                                        #                     ]
-                                        #                 )
-                                        #             ),
-                                        #             dbc.Card(
-                                        #                 html.Div(
-                                        #                     className="bi bi-cpu-fill",
-                                        #                     style=card_icon,
-                                        #                 ),
-                                        #                 style={
-                                        #                     "maxWidth": 195,
-                                        #                     "backgroundColor": "#e4ac23",
-                                        #                 },
-                                        #             ),
-                                        #         ]
-                                        #     )
-                                        # ),
-                                        # dbc.Col(
-                                        #     dbc.CardGroup(
-                                        #         [
-                                        #             dbc.Card(
-                                        #                 dbc.CardBody(
-                                        #                     [
-                                        #                         html.H3(
-                                        #                             id="client_total_rooms",
-                                        #                             className="card-title",
-                                        #                         ),
-                                        #                         html.P(
-                                        #                             "Total rooms",
-                                        #                             className="card-text",
-                                        #                         ),
-                                        #                     ]
-                                        #                 )
-                                        #             ),
-                                        #             dbc.Card(
-                                        #                 html.Div(
-                                        #                     className="bi bi-door-closed",
-                                        #                     style=card_icon,
-                                        #                 ),
-                                        #                 style={
-                                        #                     "maxWidth": 195,
-                                        #                     "backgroundColor": "#e4ac23",
-                                        #                 },
-                                        #             ),
-                                        #         ]
-                                        #     )
-                                        # ),
+                                        output_card(id="device_per_unit_area", 
+                                                    card_label="Device per unit Area",
+                                                    icon="bi bi-building",
+                                                    style=cardstyling
+                                                    )
+                           
                                     ]
                                 ),
                             ],
@@ -911,22 +344,8 @@ device_gateway_dashboard = html.Div(
                          )
                  ]
                 ),        
-        html.Br(),
-        # dbc.Row(
-        #     [
-        #         dbc.Col(
-        #             [
-        #                 dcc.Loading(
-        #                     id="loading_cach_device_gateway_data_stored",
-        #                     type="cube",
-        #                     fullscreen=True,
-        #                     children=[dcc.Store(id="cach_device_gateway_data_stored")
-        #                               ]
-        #                 ),
-        #             ]
-        #         )
-        #     ]
-        # )
+        html.Br()
+        
     ]
 )
 
