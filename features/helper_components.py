@@ -1,6 +1,11 @@
 from dash import dcc, html
 import dash_bootstrap_components as dbc
-from style_display.style import cardbody_style, card_icon, cardimg_style, card_style
+from StyleDisplay.style import (cardbody_style, 
+                                 card_icon, cardimg_style, 
+                                 card_style,
+                                 page_style,
+                                 outputcard_style,
+                                 popover_head_style)
 
 
 
@@ -108,3 +113,120 @@ def create_offcanvans(id: str, title: str, is_open=False):
             ),
         ]
     )
+
+
+main_layout = html.Div(
+    [
+        dbc.NavbarSimple(
+            brand="Carbon Analytics",
+            brand_href="/",
+            light=True,
+            brand_style={"color": "#FFFFFF", "backgroundColor": "#2F4F4F"},
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Location(id="location"),
+                        html.Div(id="main_content"),
+                        dcc.Loading(
+                            id="loading_cach_data_stored",
+                            type="cube",
+                            fullscreen=True,
+                            children=[dcc.Store(id="cach_data_stored")
+                                      ],
+                        ),
+                    ]
+                )
+            ]
+        ),
+    ],
+    style=page_style,
+)
+
+
+
+
+def output_card_alpha(col_id: str = 'col_id_test',
+                      loading_id: str = 'loading_id_test',
+                      loading_type="circle", 
+                      loading_head_id: str = "loading_head_id",
+                      card_title: str = 'card_title',
+                      icon: str = "fas fa-toolbox",
+                      card_style: str = outputcard_style,
+                      popover_head: str = 'Heading of popover',
+                      popover_head_style: dict = popover_head_style,
+                      popover_body_style: dict = None,
+                      analysis_method: str = "This details the analysis approach",
+                      target_id: str = "target_id_test",
+                      trigger_type: str = "hover",
+                      popover_body_topic: str = "Analysis Method"
+                      
+                      ):
+
+    output_card = dbc.Col(
+            id=col_id,
+            children=[
+                dbc.CardGroup(
+                    [
+                        dbc.Card(
+                            dbc.CardBody(
+                                [
+                                    dcc.Loading(
+                                        id=loading_id,
+                                        type=loading_type,
+                                        children=[
+                                            html.H2(
+                                                id=loading_head_id,
+                                                className="card-title",
+                                            )
+                                        ],
+                                    ),
+                                    html.P(
+                                        children=card_title,
+                                        className="card-text",
+                                    ),
+                                ]
+                            )
+                        ),
+                        dbc.Card(
+                            html.Div(
+                                className=icon,
+                                style=card_icon,
+                            ),
+                            style=card_style,
+                        ),
+                    ]
+                ),
+                dbc.Popover(
+                    [
+                        dbc.PopoverHeader(
+                            [
+                                html.H5(
+                                    popover_head
+                                )
+                            ],
+                            style=popover_head_style,
+                        ),
+                        dbc.PopoverBody(
+                            [ 
+                                html.H6(
+                                    popover_body_topic
+                                ),
+                                html.P(
+                                    analysis_method
+                                ),
+                            ],
+                            style=popover_body_style,
+                        ),
+                    ],
+                    target=target_id,
+                    trigger=trigger_type,
+                ),
+            ],
+        )
+    
+    return output_card
+
+
+
