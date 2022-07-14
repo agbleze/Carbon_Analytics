@@ -8,7 +8,7 @@ import datar.base as base
 
 
 #%%
-sect11b_harvestw3 = pd.read_csv(r'data/sect11b_harvestw3.csv')
+sect11b_harvestw3 = pd.read_csv(r'../data/sect11b_harvestw3.csv')
 
 #%%
 fuel_data_harvest = (sect11b_harvestw3 >> 
@@ -48,7 +48,7 @@ petrol_data_harvet_CO2emission = (fuel_data_harvest_sum >>
                                                 price_per_ltr = 87, 
                                                 total_ltr_consumed = (f.petrol_total_expend / f.price_per_ltr), 
                                                 GHG_emission_factor_CO2 = 2.31,
-                                                total_CO2_produced_kg = (f.total_ltr_consumed * f.GHG_emission_factor_CO2)
+                                                petrol_total_CO2_emitted_kg = (f.total_ltr_consumed * f.GHG_emission_factor_CO2)
                                                 )
                             )
 
@@ -59,7 +59,7 @@ kerosene_data_harvest_CO2emission = (fuel_data_harvest_sum >> dplyr.select(f[0:3
                                        price_per_ltr = 50,
                                        total_ltr_consumed = (f.kerosene_total_expend/f.price_per_ltr),
                                        GHG_emission_factor_CO2 = 2.5,
-                                       total_CO2_produced_kg = (f.total_ltr_consumed * f.GHG_emission_factor_CO2)
+                                       kerosene_total_CO2_emitted_kg = (f.total_ltr_consumed * f.GHG_emission_factor_CO2)
                                        )
  )
 
@@ -73,7 +73,7 @@ lpgas_data_harvest_CO2emission = (fuel_data_harvest_sum >>
                                                 kg_to_liter_conversion = 1.96, 
                                                 total_ltr_consumed = (f.total_kg_consumed * f.kg_to_liter_conversion), 
                                                 GHG_emission_factor_CO2 = 1.51,
-                                                total_CO2_produced_kg = (f.total_ltr_consumed * f.GHG_emission_factor_CO2)
+                                                lpgas_total_CO2_emitted_kg = (f.total_ltr_consumed * f.GHG_emission_factor_CO2)
                                                 )
                                 )
 
@@ -85,7 +85,7 @@ electricity_data_harvest_CO2emission = (fuel_data_harvest_sum >>
                                                     price_per_KWh = 29, 
                                                     total_KWh_consumed = (f.electricity_total_expend/f.price_per_KWh),
                                                     GHG_emission_factor_CO2 = 0.4034043, 
-                                                    total_CO2_consumed_kg = (f.total_KWh_consumed * f.GHG_emission_factor_CO2)
+                                                    electricity_total_CO2_emitted_kg = (f.total_KWh_consumed * f.GHG_emission_factor_CO2)
                                                     )
                                      )
 
@@ -98,7 +98,7 @@ charcoal_data_harvest_co2emission = (fuel_data_harvest_sum >> dplyr.select(f[0:3
                                                                         convert_kg_to_tonnes = 0.001,
                                                                         total_tonn_consumed = (f.total_kg_consumed * f.convert_kg_to_tonnes),
                                                                         GHG_emission_factor_CO2 = 3304,
-                                                                        total_CO2_consumed_kg = (f.total_tonn_consumed * f.GHG_emission_factor_CO2))
+                                                                        charcoal_total_CO2_emitted_kg = (f.total_tonn_consumed * f.GHG_emission_factor_CO2))
                                                                 
                                 )
 
@@ -110,12 +110,23 @@ diesel_data_harvest_co2emission = (fuel_data_harvest_sum >>
                                                 price_per_ltr = 145, 
                                                 total_ltr_consumed = (f.diesel_total_expend / f.price_per_ltr),
                                                 GHG_emission_factor_CO2kg_per_ltr = 2.676492,
-                                                total_CO2_consumed_kg = (f.total_ltr_consumed * f.GHG_emission_factor_CO2kg_per_ltr)
+                                                diesel_total_CO2_emitted_kg = (f.total_ltr_consumed * f.GHG_emission_factor_CO2kg_per_ltr)
                                             )
                                  )
 
 
 
+#%%
+# ASSIGN FUEL name to fuel eg df['PETRO'] = 'petrol'
+# Rename fuel to 'fuel_type' eg df.rename(columns='fuel_type')
+
+#%%
+df_merge = pd.concat([petrol_data_harvet_CO2emission,kerosene_data_harvest_CO2emission, lpgas_data_harvest_CO2emission,
+           electricity_data_harvest_CO2emission, charcoal_data_harvest_co2emission, diesel_data_harvest_co2emission
+           ])
+
+# %%
+#df_merge['PETROL'] = 'petrol'
 
 
 
