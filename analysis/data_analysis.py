@@ -128,9 +128,9 @@ df_merge = pd.concat([petrol_data_harvet_CO2emission,kerosene_data_harvest_CO2em
 # %%
 #df_merge['PETROL'] = 'petrol'
 
+###
+'''
+TO DO:
 
 
-
-
-
-# %%
+'''
