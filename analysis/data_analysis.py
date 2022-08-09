@@ -8,7 +8,7 @@ import datar.base as base
 
 
 #%%
-sect11b_harvestw3 = pd.read_csv(r'../data/sect11b_harvestw3.csv')
+sect11b_harvestw3 = pd.read_csv(r'data/sect11b_harvestw3.csv')
 
 #%%
 fuel_data_harvest = (sect11b_harvestw3 >> 
