@@ -35,7 +35,7 @@ fuel_data_harvest = (sect11b_harvestw3 >>
 #%%
 fuel_data_harvest_sum = (fuel_data_harvest.groupby(by=['state', 'lga', 'hhid'])
                          ["CHARCOAL", "DIESEL", "ELECTRICITY",
-                         "KEROSENE","GAS", "PETROL"]
+                         "KEROSENE","GAS", "PETROL", "FIREWOOD"]
                          .agg('sum')
                          .reset_index()
                         )
@@ -114,6 +114,20 @@ diesel_data_harvest_co2emission = (fuel_data_harvest_sum >>
                                             )
                                  )
 
+#%%
+## Estimate CO2 EMISSIONS FOR FIREWOOD
+firewood_data_harvest_co2emission = (fuel_data_harvest_sum >>
+                                      dplyr.select(fuel_data_harvest_sum[0:3], f.FIREWOOD) >>
+                                      dplyr.mutate(firewood_total_expend = f.FIREWOOD,
+                                                    price_per_kg = 8.125689,
+                                                    total_firewood_kg = (f.firewood_total_expend / f.price_per_kg),
+                                                    kg_to_tonnes = 0.001,
+                                                    firewood_tonnes = f.total_firewood_kg * f.kg_to_tonnes,
+                                                    GHG_emission_factor_CO2kg_per_tonnes = 1.747,
+                                                    firewood_total_CO2_emitted_kg = (f.total_firewood_kg * f.GHG_emission_factor_CO2kg_per_tonnes)
+                                                  )    
+                                    )
+
 
 
 #%%
@@ -121,9 +135,14 @@ diesel_data_harvest_co2emission = (fuel_data_harvest_sum >>
 # Rename fuel to 'fuel_type' eg df.rename(columns='fuel_type')
 
 #%%
-df_merge = pd.concat([petrol_data_harvet_CO2emission,kerosene_data_harvest_CO2emission, lpgas_data_harvest_CO2emission,
-           electricity_data_harvest_CO2emission, charcoal_data_harvest_co2emission, diesel_data_harvest_co2emission
-           ])
+df_merge = pd.concat([petrol_data_harvet_CO2emission,kerosene_data_harvest_CO2emission, 
+                      lpgas_data_harvest_CO2emission, electricity_data_harvest_CO2emission, 
+                      charcoal_data_harvest_co2emission, 
+                      diesel_data_harvest_co2emission,
+                      firewood_data_harvest_co2emission
+                      ]
+                    )
+
 
 # %%
 #df_merge['PETROL'] = 'petrol'
@@ -135,3 +154,56 @@ TO DO:
 2. format emission base on fuel type
 
 '''
+
+#%% sum co2
+df_merge.columns
+
+
+
+
+# %%
+df_merge.diesel_total_CO2_emitted_kg + df_merge.electricity_total_CO2_emitted_kg
+
+
+df_merge.diesel_total_CO2_emitted_kg.fillna(0)
+
+#%%
+from typing import List, Optional
+
+
+# def fillna_co2(data: pd.DataFrame, columns: List[str]):
+#   # if isinstance(columns, str):
+#   #   columns = [columns]
+    
+#   for column in columns:
+#     data = data[column].fillna(0)
+#   return data
+
+# %%
+colnames = ['petrol_total_CO2_emitted_kg', 'kerosene_total_CO2_emitted_kg', 
+            'lpgas_total_CO2_emitted_kg', 'electricity_total_CO2_emitted_kg', 
+            'charcoal_total_CO2_emitted_kg', 'diesel_total_CO2_emitted_kg',
+            'firewood_total_CO2_emitted_kg'
+            ]
+ 
+#%%
+for colname in colnames:
+  df_merge[colname].fillna(0, inplace= True)
+  
+
+#%%
+df_merge['total_CO2_kg'] = (df_merge['petrol_total_CO2_emitted_kg'] + df_merge['kerosene_total_CO2_emitted_kg'] +
+                            df_merge['lpgas_total_CO2_emitted_kg'] + df_merge['electricity_total_CO2_emitted_kg'] +
+                            df_merge['charcoal_total_CO2_emitted_kg'] + df_merge['diesel_total_CO2_emitted_kg'] + 
+                            df_merge['firewood_total_CO2_emitted_kg']
+                            )
+  
+# %%
+colnames.extend(['state', 'lga', 'hhid', 'total_CO2_kg'])
+
+#%%
+co2_data = df_merge[colnames]
+
+#%%
+
+# %%
