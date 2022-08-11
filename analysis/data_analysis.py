@@ -207,3 +207,25 @@ co2_data = df_merge[colnames]
 #%%
 
 # %%
+co2_data['hhid'].duplicated()
+
+# %%
+co2_grp = co2_data.groupby(['state','lga','hhid'])[['total_CO2_kg']].mean().reset_index()
+
+
+# %%
+co2_grp['hhid'].nunique()
+# %%
+# s3q21a HOW MUCH WAS YOUR LAST PAYMENT?(NAIRA)
+income_df = pd.read_csv(r'data/sect3_plantingw3.csv')
+
+income_df_select = income_df[['state',	'lga', 'hhid', 's3q21a']]
+
+# %%
+income_per_hhid_df = income_df_select.groupby(['state',	'lga',	'hhid'])['s3q21a'].mean().reset_index().rename(columns={'s3q21a': 'income'})
+
+#%%
+
+
+
+# %%
