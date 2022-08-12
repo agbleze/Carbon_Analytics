@@ -1,4 +1,5 @@
 #%% import packages
+from random import random
 import pandas as pd
 import datar as dr
 from datar import dplyr, f
@@ -264,19 +265,20 @@ total_emission_df.dropna()
 
 
 #%% Developing amodel
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
 from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.metrics import mean_squared_error
-from sklearn.ensemble import bagging
+from sklearn.ensemble import BaggingRegressor
+from xgboost import XGBRFRegressor
 #%%
-# create PREDICTORS and TARGET dataset
+# create nnnn bnnnPREDICTORS and TARGET dataset
 X = total_emission_df[['income_mean', 'credit_mean']]
 y = total_emission_df[['total_CO2_kg']]
 
 #%% split training and test dataset
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.3, random_state=0)
 
-hist_model = HistGradientBoostingRegressor()
+hist_model = HistGradientBoostingRegressor(random_state=0)
 
 #%%
 hist_model.fit(X=X_train, y=y_train)
@@ -287,6 +289,20 @@ y_pred = hist_model.predict(X_test)
 #%%
 test_rmse = mean_squared_error(y_true=y_test, y_pred=y_pred, squared= False)
 train_rmse = mean_squared_error(y_true=y_train, y_pred=hist_model.predict(X_train), squared=False)
+
+#%%
+bagging = BaggingRegressor(base_estimator=hist_model, random_state=0)
+
+#%%
+bagging.fit(X_train, y_train)
+
+#%%
+bagg_y_pred_test = bagging.predict(X_test)
+
+mean_squared_error(y_true=y_test, y_pred=bagg_y_pred_test, squared= False)
+
+#%%
+RandomizedSearchCV(estimator = hist_model)
 
 
 #%% focus on only hhid with emission data for at leats 1 fuel type that is co2 > 0
