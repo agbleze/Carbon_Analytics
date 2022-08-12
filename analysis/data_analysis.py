@@ -258,11 +258,35 @@ co_cred_merge = co2_all_mean.merge(credit_sub, on='hhid', how='left')
 co2_cred_income_merge = co_cred_merge.merge(income_sub, on="hhid", how="left")
 total_emission_df = co2_cred_income_merge.copy()
 
+
 #%%
+total_emission_df.dropna()
 
 
+#%% Developing amodel
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import HistGradientBoostingRegressor
+from sklearn.metrics import mean_squared_error
+from sklearn.ensemble import bagging
+#%%
+# create PREDICTORS and TARGET dataset
+X = total_emission_df[['income_mean', 'credit_mean']]
+y = total_emission_df[['total_CO2_kg']]
 
+#%% split training and test dataset
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.3, random_state=0)
 
+hist_model = HistGradientBoostingRegressor()
+
+#%%
+hist_model.fit(X=X_train, y=y_train)
+
+#%%
+y_pred = hist_model.predict(X_test)
+
+#%%
+test_rmse = mean_squared_error(y_true=y_test, y_pred=y_pred, squared= False)
+train_rmse = mean_squared_error(y_true=y_train, y_pred=hist_model.predict(X_train), squared=False)
 
 
 #%% focus on only hhid with emission data for at leats 1 fuel type that is co2 > 0
