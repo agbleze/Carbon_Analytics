@@ -429,8 +429,38 @@ lasso_pipeline = make_pipeline(linear_model_preprocess_pipeline,
                                )
 
 #%% make randomforest model
+from sklearn.ensemble import RandomForestRegressor
+rf = RandomForestRegressor(random_state=0)
 
+rf_pipeline = make_pipeline(decision_tree_data_preprocess, rf)
 
+#%%
+from sklearn.ensemble import HistGradientBoostingRegressor
+hgb = HistGradientBoostingRegressor(random_state=0)
+
+hgb_pipeline = make_pipeline(decision_tree_data_preprocess, hgb)
+
+#%%
+# make ridgecv model and stack all models together
+from sklearn.linear_model import RidgeCV
+from sklearn.ensemble import  StackingRegressor
+ridge = RidgeCV()
+all_models = [("Radom Forest", rf_pipeline),
+              ("Lasso", lasso_pipeline),
+              ("Gradient Boosting", hgb_pipeline)
+              ]
+stack_regressors = StackingRegressor(estimators=all_models, final_estimator=ridge)
+
+#%%
+X_all_raw = total_emission_df[['state',	'lga',	'sector',	'credit_mean',	'income_mean']]
+
+#%%
+X_raw_train, X_raw_test, y_raw_train, y_raw_test = train_test_split(X_all_raw, y, test_size=0.3, random_state=0)
+
+#%%
+stack_regressors.fit(X=X_raw_train, y=y_raw_train)
+
+#%%
 
 
 #%% focus on only hhid with emission data for at leats 1 fuel type that is co2 > 0
