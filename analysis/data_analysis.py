@@ -422,8 +422,13 @@ linear_model_preprocess_pipeline = make_column_transformer((num_column_preproces
                                                            )
 
 #%%
+# make lasso model
+from sklearn.linear_model import LassoCV
+lasso_pipeline = make_pipeline(linear_model_preprocess_pipeline,
+                               LassoCV()
+                               )
 
-
+#%% make randomforest model
 
 
 
