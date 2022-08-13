@@ -395,6 +395,34 @@ mean_squared_error(y_true=y_all_test, y_pred=y_pred_all, squared=False)
 #
 #
 
+#%%
+from sklearn.compose import make_column_transformer
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+
+ordinal_preprocess = OrdinalEncoder(
+  handle_unknown="use_encoded_value", unknown_value=-1
+)
+impute_missing_predictor_values = SimpleImputer(strategy='mean',
+                                                add_indicator=True
+                                                )
+decision_tree_data_preprocess = make_column_transformer((impute_missing_predictor_values, ['credit_mean', 'income_mean']),
+                                                        (ordinal_preprocess, ['sector', 'state', 'lga'])
+                                                        )
+
+#%%
+# create preprocess for linear model
+ohe_preprocess = OneHotEncoder(handle_unknown='ignore')
+num_column_preprocess_linear_ml = make_pipeline(impute_missing_predictor_values,
+                                                StandardScaler(),
+                                                )
+linear_model_preprocess_pipeline = make_column_transformer((num_column_preprocess_linear_ml, ['credit_mean', 'income_mean']),
+                                                           (ohe_preprocess, ['state', 'sector', 'lga'])
+                                                           )
+
+#%%
+
 
 
 
