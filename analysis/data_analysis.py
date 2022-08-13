@@ -505,7 +505,17 @@ axs = np.ravel(axs)
 
 for ax, (name, est) in zip(axs, all_models + [('Stacking Regressor', stack_regressors)]):
   start_time = time.time()
-  score = cross_validate(est, X_raw_train, y_raw_train)
+  score = cross_validate(est, X_raw_train, y_raw_train,
+                         scoring=['r2', 'neg_mean_absolute_error'],
+                         n_jobs=2, verbose=0
+                         )
+  elapsed_time = time.time() - start_time
+  
+  y_pred = cross_val_predict(est, X_raw_train, y_raw_train, 
+                             n_jobs=2, verbose=1)
+  
+  
+  
   
   
 
