@@ -1,4 +1,5 @@
 #%% import packages
+#%%
 from random import random
 import pandas as pd
 import datar as dr
@@ -6,6 +7,10 @@ from datar import dplyr, f
 from datar import tidyr
 import datar.all as all
 import datar.base as base
+from sklearn.model_selection import (cross_val_score, 
+                                     cross_val_score, 
+                                     cross_val_predict
+                                     )
 
 
 #%%
@@ -461,6 +466,13 @@ X_raw_train, X_raw_test, y_raw_train, y_raw_test = train_test_split(X_all_raw, y
 stack_regressors.fit(X=X_raw_train, y=y_raw_train)
 
 #%%
+y_pred_stack = stack_regressors.predict(X_raw_test)
+
+#%%
+mean_squared_error(y_true=y_raw_test, y_pred=y_pred_stack, squared=False)
+
+
+
 
 
 #%% focus on only hhid with emission data for at leats 1 fuel type that is co2 > 0
