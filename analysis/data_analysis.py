@@ -474,6 +474,7 @@ mean_squared_error(y_true=y_raw_test, y_pred=y_pred_stack, squared=False)
 #%% measure and plot results
 import time
 import matplotlib.pyplot as plt
+from sklearn.model_selection import cross_validate
 
 #%%
 def plot_regression_results(ax, y_true, y_pred, title, scores,
@@ -499,7 +500,12 @@ def plot_regression_results(ax, y_true, y_pred, title, scores,
   ax.set_title(title)
   
   
+fig, axs = plt.subplots(2, 2, figsize=(9, 7))
+axs = np.ravel(axs)
 
+for ax, (name, est) in zip(axs, all_models + [('Stacking Regressor', stack_regressors)]):
+  start_time = time.time()
+  score = cross_validate(est, X_raw_train, y_raw_train)
   
   
 
