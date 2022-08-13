@@ -270,6 +270,7 @@ from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.metrics import mean_squared_error
 from sklearn.ensemble import BaggingRegressor
 from xgboost import XGBRFRegressor
+from sklearn.preprocessing import OrdinalEncoder, OneHotEncoder
 #%%
 # create nnnn bnnnPREDICTORS and TARGET dataset
 X = total_emission_df[['income_mean', 'credit_mean']]
@@ -301,8 +302,102 @@ bagg_y_pred_test = bagging.predict(X_test)
 
 mean_squared_error(y_true=y_test, y_pred=bagg_y_pred_test, squared= False)
 
+
 #%%
-RandomizedSearchCV(estimator = hist_model)
+import stat
+import scipy.stats as stats
+import numpy as np
+
+param_grid = {'max_depth': np.random.randint(low=1, high=20, size=21) ,
+              'learning_rate': stats.uniform(0,1),
+              'min_samples_leaf': np.random.randint(low=1, high=20, size=21),
+              'l2_regularization': np.linspace(0, 1, num=10)
+            }
+
+n_iter_search = 20
+#%%
+randoncv = RandomizedSearchCV(estimator = hist_model,
+                              param_distributions=param_grid,
+                              cv=10, n_iter=n_iter_search,
+                              random_state=0,# scoring=mean_squared_error, 
+                              verbose=2
+                            )
+
+
+#%%
+randoncv.fit(X_train, y_train)
+
+#%%
+rand_y_pred = randoncv.predict(X_test)
+
+#%%
+mean_squared_error(y_true=y_test, y_pred=rand_y_pred, squared=False)
+
+#%%
+randoncv.best_params_
+
+#%%
+hist_best_model = HistGradientBoostingRegressor(random_state=0,
+                                                l2_regularization=0.8888888888888888,
+                                                learning_rate=0.9023485831739843,
+                                                max_depth=1,
+                                                min_samples_leaf=7,
+                                                #random_state=0
+                                              )
+
+
+hist_bagging = BaggingRegressor(base_estimator=hist_best_model,random_state=0)
+
+#%%
+hist_bagging.fit(X_train, y_train)
+
+#%%
+y_pred_hist_bagg_test = hist_bagging.predict(X_test)
+
+#%%
+mean_squared_error(y_true=y_test, y_pred=y_pred_hist_bagg_test, squared=False)
+
+#%%
+##########  Include state, sector and lga for prediction  ####################
+#
+#
+X_all = total_emission_df[['state',	'lga',	'sector',	'credit_mean',	'income_mean']]
+
+#%%
+ord_encode = OrdinalEncoder()
+
+#%%
+#X_all[['sector_encode']] =
+sec_ord = ord_encode.fit_transform(X_all[['sector', 'state', 'lga']])
+
+encoded_features = pd.DataFrame(sec_ord, columns=['sector_encode', 'state_encode', 'lga_encode'])
+
+#%%
+X_all[['sector_encoded', 'state_encoded', 'lga_encoded']] = encoded_features
+
+#%% use only the ordinal encoded features
+X_all.drop(columns=['sector', 'state', 'lga'], inplace= True)
+
+#%%
+X_all_train, X_all_test, y_all_train, y_all_test =  train_test_split(X_all, y, random_state=0, test_size=0.3)
+
+#%%
+hist_model.fit(X=X_all_train, y=y_all_train)
+
+#%%
+y_pred_all = hist_model.predict(X_all_test)
+
+#%%
+mean_squared_error(y_true=y_all_test, y_pred=y_pred_all, squared=False)
+
+########  Creating a composite model with imputiing missing values  ################ 
+#
+#
+#
+
+
+
+
 
 
 #%% focus on only hhid with emission data for at leats 1 fuel type that is co2 > 0
