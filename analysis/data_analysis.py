@@ -268,6 +268,10 @@ total_emission_df = co2_cred_income_merge.copy()
 #%%
 total_emission_df.dropna()
 
+#%%
+total_emission_df.to_csv(r'data/total_emission_df.csv')
+
+
 
 #%% Developing amodel
 from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
