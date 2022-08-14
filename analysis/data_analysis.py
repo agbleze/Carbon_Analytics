@@ -395,6 +395,24 @@ y_pred_all = hist_model.predict(X_all_test)
 #%%
 mean_squared_error(y_true=y_all_test, y_pred=y_pred_all, squared=False)
 
+
+#%%
+bagg_hist_all = BaggingRegressor(base_estimator=hist_model, random_state=0)
+
+bagg_hist_all.fit(X=X_all_train, y=y_all_train)
+
+#%%
+y_pred_bagg_hist_all = bagg_hist_all.predict(X_all_test)
+
+#%%
+mean_squared_error(y_true=y_all_test, y_pred=y_pred_bagg_hist_all, squared=False)
+
+#%%
+mean_squared_error(y_true=y_all_train, y_pred=bagg_hist_all.predict(X_all_train), squared=False)
+
+
+
+
 ########  Creating a composite model with imputiing missing values  ################ 
 #
 #
@@ -471,6 +489,16 @@ y_pred_stack = stack_regressors.predict(X_raw_test)
 #%%
 mean_squared_error(y_true=y_raw_test, y_pred=y_pred_stack, squared=False)
 
+
+
+## bagging stacked regressor
+#%%
+#bagg_stack_regressors = BaggingRegressor(base_estimator=stack_regressors)
+
+#%%
+#bagg_stack_regressors.fit(X=X_raw_train, y=y_raw_train)
+
+
 #%% measure and plot results
 import time
 import matplotlib.pyplot as plt
@@ -490,8 +518,8 @@ def plot_regression_results(ax, y_true, y_pred, title, scores,
   ax.get_yaxis().tick_left()
   ax.spines['left'].set_position(('outward',10))
   ax.spines['bottom'].set_position(('outward', 10))
-  ax.set_xlim([y_true.min(), y_true.max()])
-  ax.set_ylim([y_true.min(), y_true.max()])
+  ax.set_xlim([y_true.all().min(), y_true.all().max()])
+  ax.set_ylim([y_true.all().min(), y_true.all().max()])
   extra = plt.Rectangle((0, 0), 0, 0, fc='w', fill=False,
                         edgecolor='none', linewidth=0
                         )
@@ -503,6 +531,7 @@ def plot_regression_results(ax, y_true, y_pred, title, scores,
 fig, axs = plt.subplots(2, 2, figsize=(9, 7))
 axs = np.ravel(axs)
 
+#%%
 for ax, (name, est) in zip(axs, all_models + [('Stacking Regressor', stack_regressors)]):
   start_time = time.time()
   score = cross_validate(est, X_raw_train, y_raw_train,
@@ -514,10 +543,80 @@ for ax, (name, est) in zip(axs, all_models + [('Stacking Regressor', stack_regre
   y_pred = cross_val_predict(est, X_raw_train, y_raw_train, 
                              n_jobs=2, verbose=1)
   
+  plot_regression_results(ax, y_raw_train, y_pred, name,
+                          (r'$R^2={:.2f} \pm {:.2f}$' + '\n' + r'$MAE={:.2f}\pm {:.2f}$').format(
+                            np.mean(score['test_r2']),
+                            np.std(score['test_r2']),
+                            -np.mean(score['test_neg_mean_absolute_error']),
+                            np.std(score['test_neg_mean_absolute_error']),
+                          ),
+                          elapsed_time,
+                          )
+
+#%%
+plt.suptitle('Single predictors versus stacked predictors')
+plt.tight_layout()
+plt.subplots_adjust(top=0.9)
+plt.show()  
   
+
+
+#%%  
+# fit a knn regressor
+from sklearn.neighbors import KNeighborsRegressor
+
+knn = KNeighborsRegressor(n_neighbors=10)
+
+knn_model_pipeline = make_pipeline(linear_model_preprocess_pipeline, knn)
+
+#%%
+knn_model_pipeline.fit(X=X_raw_train, y=y_raw_train)
+
+#
+y_pred_knn = knn_model_pipeline.predict(X_raw_test)
+
+#%%
+mean_squared_error(y_true=y_raw_test, y_pred=y_pred_knn, squared=False)
+
+#%%
+knn_results = []
+for nn in range(1, 30):
+  knn_schedule = KNeighborsRegressor(n_neighbors=nn)
+  knn_schedule_pipeline = make_pipeline(linear_model_preprocess_pipeline, knn)
+  knn_schedule_pipeline.fit(X=X_raw_train, y=y_raw_train)
+  y_pred = knn_schedule_pipeline.predict(X_raw_test)
+  rmse = mean_squared_error(y_true=y_raw_test, y_pred=y_pred, squared=False)
+  knn_results.append({'k-neighbors': nn, 'rmse': rmse})
+    
+results = pd.DataFrame(data=knn_results) 
   
-  
-  
+#%% lasso prediction
+lasso_pipeline.fit(X_raw_train, y_raw_train)
+
+#%%
+y_pred_lasso = lasso_pipeline.predict(X_raw_test)
+
+mean_squared_error(y_true=y_raw_test, y_pred=y_pred_lasso, squared=False)
+
+#%% rf prediction
+rf_pipeline.fit(X_raw_train, y_raw_train)
+
+#%%
+y_pred_rf = rf_pipeline.predict(X_raw_test)
+mean_squared_error(y_true=y_raw_test, y_pred=y_pred_rf, squared=False)
+
+#%% ridged model
+rd = RidgeCV(cv=10)
+rd_pipeline = make_pipeline(linear_model_preprocess_pipeline, rd)
+
+rd_pipeline.fit(X=X_raw_train, y=y_raw_train)
+
+#%%
+y_pred_rd = rd_pipeline.predict(X_raw_test)
+mean_squared_error(y_true=y_raw_test, y_pred=y_pred_rd, squared=False)
+
+
+
 
 
 
