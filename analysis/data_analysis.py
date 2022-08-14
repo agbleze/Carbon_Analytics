@@ -615,7 +615,24 @@ rd_pipeline.fit(X=X_raw_train, y=y_raw_train)
 y_pred_rd = rd_pipeline.predict(X_raw_test)
 mean_squared_error(y_true=y_raw_test, y_pred=y_pred_rd, squared=False)
 
+#%% histgradientboosting
+hgb_pipeline.fit(X_raw_train, y_raw_train)
+y_pred_hgb = hgb_pipeline.predict(X_raw_test)
+mean_squared_error(y_true=y_raw_test, y_pred=y_pred_hgb, squared=False)
 
+#%%
+xgb = XGBRFRegressor()
+xgb_pipeline = make_pipeline(decision_tree_data_preprocess, xgb)
+xgb_pipeline.fit(X=X_raw_train, y=y_raw_train)
+
+y_pred_xgb = xgb_pipeline.predict(X_raw_test)
+mean_squared_error(y_true=y_raw_test, y_pred=y_pred_xgb, squared=False)
+
+'''
+TODO:
+1. Tune parameters for each model
+2. bagging of each model
+'''
 
 
 
