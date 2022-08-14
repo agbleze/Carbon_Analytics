@@ -6,6 +6,7 @@ from sklearn.compose import make_column_transformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
 
 total_emission_df = pd.read_csv(r'data/total_emission_df.csv')
 
@@ -19,6 +20,11 @@ encoded_features = pd.DataFrame(feature_ordinal_encoded, columns=['sector_encode
 
 total_emission_df[['sector_encoded', 'state_encoded', 'lga_encoded']] = encoded_features
 
+X = total_emission_df[['state',	'lga',	'sector',	'credit_mean',	'income_mean']]
+y = total_emission_df['total_CO2_kg']
+
+
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.3, random_state=0)
 
 ordinal_preprocess = OrdinalEncoder(
   handle_unknown="use_encoded_value", unknown_value=-1
