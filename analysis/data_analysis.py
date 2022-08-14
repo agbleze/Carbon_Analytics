@@ -451,6 +451,21 @@ lasso_pipeline = make_pipeline(linear_model_preprocess_pipeline,
                                LassoCV()
                                )
 
+#%%
+#LassoCV()._get_param_names
+
+linear_param_set = {'alpha': np.arange(0.0001, 1, 0.001),
+                    'selection': ['cyclic', 'random'],
+                    'eps': np.arange(0.0001, 1, 0.001),
+                    'tol': np.arange(0.0001, 1, 0.001),
+                    'n_alpha': range(100, 1000, 100)
+                  }
+
+
+
+#%%
+
+
 #%% make randomforest model
 from sklearn.ensemble import RandomForestRegressor
 rf = RandomForestRegressor(random_state=0)
@@ -598,6 +613,17 @@ y_pred_lasso = lasso_pipeline.predict(X_raw_test)
 
 mean_squared_error(y_true=y_raw_test, y_pred=y_pred_lasso, squared=False)
 
+#%%
+
+lasso_rand = RandomizedSearchCV(estimator=lasso_pipeline, param_distributions=linear_param_set,
+                                 n_iter=50, cv=50
+                                 )
+
+#%%
+lasso_rand.fit(X=X_raw_train, y=y_raw_train)
+
+
+
 #%% rf prediction
 rf_pipeline.fit(X_raw_train, y_raw_train)
 
@@ -609,6 +635,7 @@ mean_squared_error(y_true=y_raw_test, y_pred=y_pred_rf, squared=False)
 rd = RidgeCV(cv=10)
 rd_pipeline = make_pipeline(linear_model_preprocess_pipeline, rd)
 
+#%%
 rd_pipeline.fit(X=X_raw_train, y=y_raw_train)
 
 #%%
@@ -628,6 +655,27 @@ xgb_pipeline.fit(X=X_raw_train, y=y_raw_train)
 y_pred_xgb = xgb_pipeline.predict(X_raw_test)
 mean_squared_error(y_true=y_raw_test, y_pred=y_pred_xgb, squared=False)
 
+#%%
+from sklearn.svm import SVR
+
+svr_rbf = SVR(kernel='linear')
+
+svr_rbf_pipeline = make_pipeline(linear_model_preprocess_pipeline,
+                                 svr_rbf)
+
+#%%
+svr_rbf_pipeline.fit(X=X_raw_train, y=y_raw_train)
+
+#%%
+y_pred_svrrbd = svr_rbf_pipeline.predict(X_raw_test)
+
+mean_squared_error(y_true=y_raw_test, y_pred=y_pred_svrrbd, squared=False)
+
+
+
+
+
+#%%
 '''
 TODO:
 1. Tune parameters for each model
