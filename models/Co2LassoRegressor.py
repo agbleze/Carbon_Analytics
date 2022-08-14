@@ -2,8 +2,15 @@
 from sklearn.linear_model import LassoCV
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import mean_squared_error
-from models.preprocess_pipeline import linear_model_preprocess_pipeline
 import numpy as np
+from sklearn.pipeline import make_pipeline
+from sklearn.metrics import mean_squared_error
+from preprocess_pipeline import (linear_model_preprocess_pipeline,
+                                 X_train, 
+                                 X_test, 
+                                 y_train,
+                                 y_test
+                                )
 
 
 
@@ -23,12 +30,13 @@ if __name__ == '__main__':
                     }
 
     #%% lasso prediction
-    lasso_pipeline.fit(X_raw_train, y_raw_train)
+    lasso_pipeline.fit(X_train, y_train)
 
     #%%
-    y_pred_lasso = lasso_pipeline.predict(X_raw_test)
+    y_pred_lasso = lasso_pipeline.predict(X_test)
 
-    mean_squared_error(y_true=y_raw_test, y_pred=y_pred_lasso, squared=False)
+    rmse = mean_squared_error(y_true=y_test, y_pred=y_pred_lasso, squared=False)
+    print(f'lasso rmse: {rmse}')
 
 
 
