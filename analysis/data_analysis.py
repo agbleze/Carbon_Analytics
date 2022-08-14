@@ -619,12 +619,12 @@ mean_squared_error(y_true=y_raw_test, y_pred=y_pred_lasso, squared=False)
 
 #%%
 
-lasso_rand = RandomizedSearchCV(estimator=lasso_pipeline, param_distributions=linear_param_set,
-                                 n_iter=50, cv=50
-                                 )
+# lasso_rand = RandomizedSearchCV(estimator=lasso_pipeline, param_distributions=linear_param_set,
+#                                  n_iter=50, cv=50
+#                                  )
 
-#%%
-lasso_rand.fit(X=X_raw_train, y=y_raw_train)
+# #%%
+# lasso_rand.fit(X=X_raw_train, y=y_raw_train)
 
 
 
