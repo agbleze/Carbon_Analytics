@@ -8,12 +8,15 @@ from preprocess_pipeline import (decision_tree_data_preprocess,
                                     y_test
                                 )
 
+xgb = XGBRFRegressor()
+xgb_pipeline = make_pipeline(decision_tree_data_preprocess, xgb)
+    
+    
 if __name__ == '__main__':
-    xgb = XGBRFRegressor()
-    xgb_pipeline = make_pipeline(decision_tree_data_preprocess, xgb)
+    
     xgb_pipeline.fit(X=X_train, y=y_train)
 
     y_pred_xgb = xgb_pipeline.predict(X_test)
     rmse = mean_squared_error(y_true=y_test, y_pred=y_pred_xgb, squared=False)
-    print(f'Xggbrf: {rmse}')
+    print(f'Xggbrf test rmse: {rmse}')
 
