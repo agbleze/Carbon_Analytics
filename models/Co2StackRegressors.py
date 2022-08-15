@@ -7,7 +7,6 @@ from models.Co2LassoRegressor import lasso_pipeline
 from models.Co2HistgradientImputed import hgb_pipeline
 
 
-
 ridge = RidgeCV()
 all_models = [("Radom Forest", rf_pipeline),
               ("Lasso", lasso_pipeline),
