@@ -10,7 +10,7 @@ from features.helper_components import (main_layout
                                #plot_scatterplot, make_boxplot
                                )
 from features.pages import create_page_with_card_button
-from features.pages_show import (analytics_layout, 
+from features.pages_show import (analytics_sidebar, 
                                  carbon_emission, 
                                  hypothesis_layout
                                  )
@@ -49,7 +49,7 @@ app.validation_layout = html.Div(
      #create_page_with_card_button()
      #explore_layout, 
      app_description, 
-     analytics_layout
+     analytics_sidebar
      #prediction_layout, 
      #histogram_layout,
      #scatter_layout, boxplot_layout, 
