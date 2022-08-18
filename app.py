@@ -11,7 +11,7 @@ from features.helper_components import (main_layout
                                )
 from features.pages import create_page_with_card_button
 from features.pages_show import (analytics_sidebar, 
-                                 carbon_emission, 
+                                 emission_prediction_layout, 
                                  hypothesis_layout
                                  )
 import dash
@@ -49,7 +49,8 @@ app.validation_layout = html.Div(
      #create_page_with_card_button()
      #explore_layout, 
      app_description, 
-     analytics_sidebar
+     analytics_sidebar,
+     emission_prediction_layout
      #prediction_layout, 
      #histogram_layout,
      #scatter_layout, boxplot_layout, 
