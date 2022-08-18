@@ -1,10 +1,14 @@
 #%%
+from venv import create
 import dash_trich_components as dtc
 from dash import dcc
 import dash_bootstrap_components as dbc
 from dash import html
-from helper_components import output_card
+from features.helper_components import output_card, output_card_alpha
 
+import pandas as pd
+
+df = pd.read_csv(r'data/total_emission_df.csv')
 #%%
 card_icon = {
     "color": "green",
@@ -14,130 +18,103 @@ card_icon = {
 }
 
 cardstyling = {"maxWidth": 195,
-                    "backgroundColor": "#e4ac23",
-                }
-output_card(id = "total_client", 
-            card_label="Total clients", 
-            icon="bi bi-people-fill",
-            style=cardstyling
-            )
-portfolio = html.Div(
+               "backgroundColor": "#e4ac23",
+            }
+
+model_card_style = {'borderColor': 'green',
+                    'borderRadius': '70%',
+                    'border': 'solid',
+                    'textAlign': 'center',
+                    'width': '30%',
+                    'position': 'center',
+                    #'textSize': '150%'
+                    }
+
+country_layout = html.Div(
     [
         dbc.Container(
             [
+                html.H2('Average Carbon dioxide (CO2) emission of households'),
                 dbc.Row(
-                    [
-                        output_card(id = "total_client", 
-                                    card_label="Total clients", 
-                                    icon="bi bi-people-fill",
-                                    style=cardstyling
-                                    ),
-                        output_card(id = "total_building", 
-                                    card_label="Total building", 
-                                    icon="bi bi-house-fill",
-                                    style=cardstyling
-                                    ),
-                        output_card(id = "total_building_area", 
-                                    card_label="Total building Area (square meters)", 
-                                    icon="bi bi-building",
-                                    style=cardstyling
-                                    )                        
+                    [ output_card_alpha(col_id='id_avg_all_emission', card_title='Average emission (all fuel type)'),
+                        output_card_alpha(col_id='id_avg_petrol_emission', card_title='Average emission (Petrol)'),
+                        output_card_alpha(col_id='id_avg_electricity_emission', card_title='Average emission (Electricity)'),
+                        output_card_alpha(col_id='id_avg_diesel_emission', card_title='Average emission (Diesel)')                        
                     ]
                 ),
                 html.Br(), html.Br(),
                 dbc.Row(
-                    [
-                        output_card(id = "average_building_area", 
-                                    card_label="Average building Area (square meters)", 
-                                    icon="bi bi-bank2",
-                                    style=cardstyling
-                                    ),
-                        output_card(id="total_countries", 
-                                    card_label="Total countries operated in", 
-                                    icon="bi bi-geo-alt-fill",
-                                    style=cardstyling
-                                    ),
-                        output_card(id="total_cities", 
-                                    card_label="Total number of cities operated in", 
-                                    icon="bi bi-geo-fill",
-                                    style=cardstyling
-                                    )                       
+                    [ output_card_alpha(col_id='id_avg_lpg_emission', card_title='Average emission (LPG)'),
+                        output_card_alpha(col_id='id_avg_firewood_emission', card_title='Average emission (Firewood)'),
+                        output_card_alpha(col_id='id_avg_charcoal_emission', card_title='Average emission (Charcoal)'),
+                        output_card_alpha(col_id='id_avg_kerosene_emission', card_title='Average emission (Kerosene)')       
                     ]
                 ),
+                
+                html.Br(), html.Br(),
+                dbc.Row([dbc.Col(lg=6,
+                                 children=[dbc.Label('Histogram distribution'),
+                                  dcc.Graph(id='id_graph_hist_country')
+                                  ]
+                                ),
+                         dbc.Col(lg=6, 
+                                 children=[dbc.Label('Boxplot of emission'), 
+                                            dcc.Graph(id='id_graph_box_country')
+                                        ]
+                                )
+                         ]
+                        ),
+                html.Br(),
+                dbc.Row([dbc.Col(lg=6, 
+                                 children=[dbc.Label('Average Emission in each state'), 
+                                            dcc.Graph(id='id_graph_bubble_country')
+                                        ]
+                                )
+                         ]
+                        )
             ]
         )
     ]
 )
 
 
-client_dashboard = html.Div(
-    [
-        dbc.Container(
-            [
-                dbc.Row(
-                    [
-                        dbc.Col(
-                            id="client_dropdown", lg=2, style={"paddingLeft": "0%"}
-                        ),
-                        dbc.Col(
-                            id="client_portfolio",
-                            lg=10,
-                            children=[
-                                dbc.Row(
-                                    [
-                                        output_card(id="client_total_building", 
-                                                    card_label="Total number of cities operated in", 
-                                                    icon="bi bi-geo-fill",
-                                                    style=cardstyling
-                                                    ),
-                                        output_card(id="client_total_building_area", 
-                                                    card_label="Total number of cities operated in", 
-                                                    icon="bi bi-geo-fill",
-                                                    style=cardstyling
-                                                    ),
-                                        output_card(id="client_average_building_area", 
-                                                    card_label="Total number of cities operated in", 
-                                                    icon="bi bi-geo-fill",
-                                                    style=cardstyling
-                                                    )
-                                    ]
-                                ),
-                                html.Br(),
-                                dbc.Row(
-                                    [
-                                        output_card(id="client_total_points", 
-                                                    card_label="Total Equipment Points", 
-                                                    icon="bi bi-file-easel-fill",
-                                                    style=cardstyling
-                                                    ),
-                                        output_card(id="client_total_equipment", 
-                                                    card_label="Total Equipment", 
-                                                    icon="bi bi-cpu-fill",
-                                                    style=cardstyling
-                                                    ),
-                                        output_card(id="client_total_rooms", 
-                                                    card_label="Total rooms", 
-                                                    icon="bi bi-door-closed",
-                                                    style=cardstyling
-                                                    )
-                                    ]
-                                ),
-                            ],
-                        ),
-                    ]
-                )
-            ]
-        ),
-        html.Br(),
-        html.Br(),
-        html.Div(id="client_buildings_table"),
-        html.Br(),
-        html.Div(id="client_equipment_graph"),
-    ]
+sector_emission = html.Div(dbc.Container(
+    [dbc.Row([dbc.Col(lg=4, 
+                      children=[
+                                dbc.Label('Select sector'), 
+                                dcc.Dropdown(id='id_sector_dropdown',
+                                            options=[{'label': sector, 'value': sector} 
+                                                    for sector in df['sector']
+                                                    ]
+                                            )
+                        ]
+                    ),
+              dbc.Col([output_card_alpha(col_id='id_avg_sector_emission', 
+                                         card_title='sector emission',
+                                         )
+                       ]
+                      )
+              ]
+             ),
+     html.Br(), html.Br(),
+     dbc.Row([dbc.Col(lg=6, 
+                      children=[dbc.Label('bubble chart emission for states in sector selected'),
+                                dcc.Graph(id='id_graph_bubble_sector_state_emission')
+                                ]
+                    ),
+              dbc.Col(lg=6, 
+                      children=[dbc.Label('bubble for sector fuel type emission'),
+                                dcc.Graph(id='id_graph_bubble_sector_fuel_emission')
+                                ]
+                    )
+              ]
+            )
+     ]
+    )
 )
 
 
-content_3 = html.Div(
+state_emission = dbc.Container(
     [
         html.Br(),
         dbc.Row(
@@ -145,15 +122,10 @@ content_3 = html.Div(
                 dbc.Col(
                     lg=4,
                     children=[
-                        dbc.Label("Select Building size"),
-                        dcc.RangeSlider(
-                            min=0,
-                            max=500_000,
-                            value=(20_000, 100_000),
-                            id="building_size",
-                            tooltip={"placement": "bottom", "always_visible": True},
-                            allowCross=False
-                        ),
+                        dbc.Label("Select State"),
+                        dcc.Dropdown(id='id_state_dropdown',
+                                     options=[{'label': state, 'value': state} for state in df['state'].unique()]
+                                    ),
                     ],
                 ),
                 dbc.Col(
@@ -161,33 +133,11 @@ content_3 = html.Div(
                     children=[
                         dbc.Row(
                             [
-                                 output_card(id="bs_total_clients", 
-                                            card_label="Total Clients", 
-                                            icon="bi bi-people-fill",
-                                            style=cardstyling
-                                            ),
-                                 output_card(id="bs_total_buildings", 
-                                            card_label="Total Buildings", 
-                                            icon="bi bi-house-fill",
-                                            style=cardstyling
-                                            ),
-                                 output_card(id="bs_total_equipments", 
-                                            card_label="Total Equipments", 
-                                            icon="bi bi-cpu-fill",
-                                            style=cardstyling
-                                            )
+                                dbc.Label(id='selected_state_emission'),
+                                output_card_alpha(col_id='id_avg_state_emission', card_title='Average emission')
                             ]
                         ),
                         html.Br(),
-                        dbc.Row(
-                            [
-                                output_card(id="bs_total_equipment_points", 
-                                            card_label="Total Equipment Points",
-                                            icon="bi bi-grid-3x3-gap",
-                                            style=cardstyling
-                                            )
-                            ]
-                        ),
                     ],
                 ),
             ]
@@ -195,12 +145,175 @@ content_3 = html.Div(
         html.Br(),
         html.Br(),
         dbc.Row(
-            [html.Div(id="bs_client_building_table"), html.Div(id="bs_building_table")]
+            [dbc.Col(lg=6, 
+                     children=[dbc.Label('Histogram of emissions'), 
+                               dcc.Graph(id='id_graph_hist_state')
+                               ]
+                     ), 
+             dbc.Col(lg=6, children=[dbc.Label('Boxplot of state emission'), 
+                                     dcc.Graph(id='id_graph_box_state')
+                                     ]
+                    )
+            ]
         ),
+        
+        html.Br(),
+        dbc.Row([dbc.Col(lg=6, children=[dbc.Label('Bubble chart of emission per fuel type in state'), 
+                                         dcc.Graph(id='id_graph_bubble_state')
+                                         ]
+                         )
+                 ]
+                )
     ]
 )
 
-content_4 = html.Div(
+emission_prediction_layout = html.Div([dtc.SideBar([dtc.SideBarItem(id='desc_model_sidebutton', 
+                                                                    label='Modelling process'
+                                                                    ),
+                                                    dtc.SideBarItem(id='eval_model_sidebutton',
+                                                                    label='Models evaluation'
+                                                                    ),
+                                                    dtc.SideBarItem(id='model_predict_sidebutton',
+                                                                    label='Prediction'
+                                                                    )
+                                                    ]
+                                                   ),
+                                        html.Div(id='prediction_content')
+                                        ]
+                                    )
+
+model_description = html.Div([dcc.Markdown(""" ### Data preprocessing pipeline
+                                           """
+                                        )
+                              ]
+                             )
+
+
+best_model_card = dbc.Card(children=[dbc.CardHeader('Best model: Hist'),
+                            dbc.CardBody(children=[dbc.Col(#lg=6, 
+                                                            children=[
+                                                                        html.H5('Root Mean Squared Error (RMSE)'),
+                                                                        html.H1('133',
+                                                                                style=model_card_style
+                                                                            ),
+                                                                    ],
+                                                            
+                                                        ), 
+                                                   html.Br(),
+                                          
+                                          dbc.Col(#lg=6, 
+                                                  children=[
+                                                            html.H5('Co-efficient of determination (R2)'),
+                                                            html.Div(children=html.H1('23%'),
+                                                                    style=model_card_style
+                                                                    )
+                                                        ]
+                                            )
+                                          ], 
+                                         class_name='mx-auto'
+                                         )
+                            ],
+                           color='light'
+                        )
+
+
+
+
+
+models_evaluated = dbc.Card([dbc.CardHeader('Models evaluated'),
+                             dbc.CardBody([html.H3('Plot of RMSE of various models'),
+                                           dcc.Graph(id='id_graph_models_rmse_plot')
+                                           ]
+                                          ),
+                             dbc.CardFooter('R2 of models')
+                             ]
+                            )
+
+
+model_evaluation = html.Div([
+    dbc.Container([html.Br(),
+                   dbc.Row([dbc.Col(lg=4, 
+                                    children=[best_model_card]
+                                    ), 
+                            dbc.Col(lg=8,
+                                    children=[models_evaluated])
+                            ]
+                        ), 
+                   dbc.Row()
+                   ]
+                  )
+    ]
+)
+'''
+TO DO:
+1. Sidebar
+    i. Modelling process
+    ii, Models
+
+2. Main layout   
+TO DO emission prediction:
+
+1. dot plot of models evaluations: rmse
+2. card for models evaluations: r2
+3. card for best model: rmse, r2
+'''
+
+#############################
+
+def create_dropdown(id: str, colname: str, data: pd.DataFrame):
+    return dcc.Dropdown(id=id, options=[{'label': item, 'value': item} 
+                                 for item in data[colname]
+                                 ]
+                )
+    
+    
+    
+    
+    
+indicators_dropdowns = dbc.Container([dbc.Row(
+                        dbc.Col([create_dropdown(id='id_state_name', colname='state', data=df)]
+                            ),
+                        dbc.Col([create_dropdown(id='id_lga_name', colname='lga', data=df)]),
+                        dbc.Col([create_dropdown(id='id_sector_name', colname='sector', data=df)])
+                    ),
+               dbc.Row([dbc.Col(create_dropdown(id='id_credit_amt', colname='credit_mean', data=df)),
+                        dbc.Col(create_dropdown(id='id_income_amt', colname='income_mean', data=df))
+                        ])
+               ]
+            )
+
+
+parameter_dropdowns = dbc.Card([])
+
+model_prediction_show = html.Div([dbc.Container(
+                                                [dbc.Row()
+                                                 ]
+                                                )
+                                  ]
+                                 )
+
+'''
+TO DO:
+PREDICTION
+
+1. Dropdowns with tooltip
+    i. state
+    ii. LGA
+    iii. sector
+    iv. credit
+    v. income state
+    vi. predict button
+    
+2. Prediction card
+    i. cardheadr : prediction of co2
+    ii. body: predict (2 d.p)
+     
+'''
+
+
+
+
+hypothesis_layout = html.Div(
     [
         html.Br(),
         dbc.Row(
@@ -229,32 +342,8 @@ content_4 = html.Div(
                         dcc.Markdown(
                             """
 
-                                ### Client segmentation based on portfolio
+                                ### 
 
-                                This analysis aims to group clients into clusters
-                                of similarity based on clients' portfolio size.
-                                Portfolio size is one of the several indicators
-                                use to measure
-                                the importance or relevance of a client to our growth hence
-                                its use for the analysis.
-
-                                The practical utility of this analysis is not limited to the following:
-
-                                1. Among others, there is the possibility of targeting clients and
-                                offering them certain features based on portfolio size.
-
-                                2. The analysis provides a clue to understanding what is at stack
-                                when in business discussions with clients. For example, we do not want to loss
-                                clients in a cluster of high portfolio and the approach to clients
-                                in such group  may be critical compared to clients in a group of smaller
-                                portfolio size. This could also lead to prioritizing pain points of
-                                clients in a group of higher portfolio as dissatifaction means lossing
-                                a client with sizable share of our portfolio.
-
-                                Kmeans clustering analysis was undertaken based of the average number of
-                                equipments, buildings, points, buildings area and number of rooms of clients.
-
-                                The results indicates clients can be optimally grouped into 4 clusters.
 
                             """
                         )
@@ -279,99 +368,71 @@ content_4 = html.Div(
 
 content_5 = html.Div("")
 
-device_gateway_dashboard = html.Div(
+fuel_type_emission = html.Div(
     [
         dbc.Container(
             [
                 dbc.Row(
                     [
-                        dbc.Col(
-                            id="device_building_dropdown", lg=3, style={"paddingLeft": "0%"}
+                        dbc.Col(lg=3, children=[dbc.Label('Select fuel type'), 
+                                                dcc.Dropdown(id='id_fuel_type',
+                                                             options=[{'label': fuel_type, 'value': fuel_type}
+                                                                      for fuel_type in ['kerosene', 'petrol', 'diesel']
+                                                                      ]
+                                                             )
+                                                ],
                         ),
-                        dbc.Col(
-                            id="building_gateway",
-                            lg=9,
-                            children=[
-                                dbc.Row(
-                                    [
-                                        output_card(id="building_total_gateway", 
-                                                    card_label="Number of ENVIO Gateways",
-                                                    icon="bi bi-grid-3x3-gap",
-                                                    style=cardstyling
-                                                    ),
-                                        output_card(id="total_building_devices", 
-                                                    card_label="Total building Devices",
-                                                    icon="bi bi-building",
-                                                    style=cardstyling
-                                                    ),
-                                        output_card(id="gateway_per_unit_area", 
-                                                    card_label="Gateway per Unit Area",
-                                                    icon="bi bi-building",
-                                                    style=cardstyling
-                                                    )
-                                    ]
+                        dbc.Col(lg=3, children=[dbc.Label('Select state'),dcc.Dropdown(id='id_state_fuel',
+                                                                                       options=[{'label': state, 'value': state} for state in df["state"]
+                                                                                                ]
+                                                                                       )
+                                                ]
                                 ),
-                                html.Br(),
-                                dbc.Row(
-                                    [
-                                        output_card(id="device_per_unit_area", 
-                                                    card_label="Device per unit Area",
-                                                    icon="bi bi-building",
-                                                    style=cardstyling
-                                                    )
-                           
-                                    ]
+                        dbc.Col(lg=6, children=[output_card_alpha(col_id='id_avg_fuel_emission',
+                                                                  card_title='Average emission'
+                                                                  ),
+                                                ]
                                 ),
-                            ],
-                        ),
+                        
                     ]
                 )
             ]
         ),
         html.Br(),
         html.Br(),
-        dbc.Row([dbc.Col(id='col_gateway_table',
-                         children=[
-                                    html.H5('Gateways'),
-                                    html.Div(id="gateway_table")
-                                   ]
-                         ), 
-                 dbc.Col(id='col_device_table',
-                         children=[
-                                    html.H5('Devices'),
-                                    html.Div(id='device_table')
-                                   ]
+        dbc.Row([dbc.Col(lg=6, children=[dbc.Label('Histogram fuel carbon emission'), 
+                          dcc.Graph(id='id_graph_hist_fuel')
+                          ]
+                         ),
+                 dbc.Col(lg=6, children=[dbc.Label('Boxplot fuel emission'), 
+                                         dcc.Graph(id='id_graph_box_fuel')
+                                         ]
                          )
                  ]
-                ),        
-        html.Br()
-        
+                )
     ]
 )
 
-layout = html.Div(
+
+
+analytics_sidebar = html.Div(
     [
         dtc.SideBar(
             [
                 dtc.SideBarItem(
-                    id="id_1",
-                    label="Portfolio summary",
+                    id="id_country",
+                    label="Country level",
                     icon="fas fa-infinity"
                 ),
                 dtc.SideBarItem(
-                    id="id_2", label="Client portfolio", icon="fa fa-user-circle"
+                    id="id_state", label="State level", icon="fa fa-user-circle"
                 ),
                 dtc.SideBarItem(
-                    id="id_3",
-                    label="Building size",
-                    icon="fas fa-hotel"
+                    id="id_sector", label="Sector level", icon="fas fa-chart-line"
                 ),
                 dtc.SideBarItem(
-                    id="id_4", label="Customer segmentation", icon="fas fa-chart-line"
-                ),
-                dtc.SideBarItem(
-                    id='device_gateway',
-                    label="Devices and Gateways",
+                    id='id_fuel',
+                    label="Fuel type",
                     icon='bi bi-diagram-3-fill'
                 ),
                 dtc.SideBarItem(id="id_5", label="Metrics", icon="fas fa-cog"),
@@ -380,3 +441,51 @@ layout = html.Div(
         html.Div([], id="page_content"),
     ]
 )
+
+
+'''
+TO DO:
+1. National level emission
+
+** when component is hovered on, show number of households analyzed
+** and method of analysis
+-- Avg emission (all fuel)
+-- Avg emission for electricity
+-- Avg emission for LPG
+-- Avg emission for FIREWOOD
+-- Avg emission for charcoal
+-- Avg emission for petrol
+-- Avg emission for diesel
+-- Avg emission for kerosene
+
+II Histogram, boxplot for total emission
+bubble plot for total emission in all states
+
+
+2. State level
+
+++ select state name
+
+-- Avg state emission
+-- max hh emission in state
+
+III Histogram, boxplot for total state emission
+bubble plot for state based on fuel type
+
+
+3. Fuel type
+
+++ Select fuel, state
+
+-- Avg state fuel type emission
+-- max hh emission in state
+
+IV Histogram, boxplot for total state fuel type emission
+Bubble chart per fuel for all states
+
+
+
+
+
+
+'''
