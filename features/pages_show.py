@@ -5,6 +5,7 @@ from dash import dcc
 import dash_bootstrap_components as dbc
 from dash import html
 from features.helper_components import output_card, output_card_alpha
+from StyleDisplay.style import button_style
 
 import pandas as pd
 
@@ -36,8 +37,8 @@ country_layout = html.Div(
             [
                 html.H2('Average Carbon dioxide (CO2) emission of households'),
                 dbc.Row(
-                    [ output_card_alpha(col_id='id_avg_all_emission', card_title='Average emission (all fuel type)'),
-                        output_card_alpha(col_id='id_avg_petrol_emission', card_title='Average emission (Petrol)'),
+                    [ output_card_alpha(loading_head_id='id_avg_all_emission', card_title='Average emission (all fuel type)'),
+                        output_card_alpha(loading_head_id='id_avg_petrol_emission', card_title='Average emission (Petrol)'),
                         output_card_alpha(col_id='id_avg_electricity_emission', card_title='Average emission (Electricity)'),
                         output_card_alpha(col_id='id_avg_diesel_emission', card_title='Average emission (Diesel)')                        
                     ]
@@ -262,31 +263,71 @@ TO DO emission prediction:
 
 def create_dropdown(id: str, colname: str, data: pd.DataFrame):
     return dcc.Dropdown(id=id, options=[{'label': item, 'value': item} 
-                                 for item in data[colname]
+                                 for item in data[colname].unique()
                                  ]
                 )
     
     
     
-    
+dcc.Dropdown(id='id_sector_dropdown',
+            options=[{'label': sector, 'value': sector} 
+                    for sector in df['sector']
+                    ]
+            )   
     
 indicators_dropdowns = dbc.Container([dbc.Row(
-                        dbc.Col([create_dropdown(id='id_state_name', colname='state', data=df)]
+                        children=[dbc.Col([create_dropdown(id='id_state_name', colname='state', data=df)]
                             ),
                         dbc.Col([create_dropdown(id='id_lga_name', colname='lga', data=df)]),
                         dbc.Col([create_dropdown(id='id_sector_name', colname='sector', data=df)])
-                    ),
-               dbc.Row([dbc.Col(create_dropdown(id='id_credit_amt', colname='credit_mean', data=df)),
-                        dbc.Col(create_dropdown(id='id_income_amt', colname='income_mean', data=df))
-                        ])
+                        ]
+                    ),html.Br(), html.Br(),
+               dbc.Row(children=[dbc.Col([dcc.Input(id='id_credit_amt', type='number', 
+                                                    placeholder='select credit amount receive',
+                                                    min=df['credit_mean'].min(),
+                                                    max=df['credit_mean'].max(),
+                                                    step=10, debounce=True
+                                                    )
+                                          ]
+                                    ),
+                                 
+                                dbc.Col([dcc.Input(id='id_income_amt', type='number', 
+                                                   placeholder='select income amount receive',
+                                                    min=df['income_mean'].min(),
+                                                    max=df['income_mean'].max(),
+                                                    step=10, debounce=True, 
+                                                    )
+                                          ]
+                                        ),
+                                dbc.Col(dbc.Button(id='id_predict_emission',
+                                                    children='Predict CO2 Emission',
+                                                    style=button_style
+                                                )
+                                        )
+                                ]
+                    )
                ]
             )
 
 
-parameter_dropdowns = dbc.Card([])
+
+
+prediction_board = dbc.Card([html.Br(), html.Br(),
+                             dbc.CardHeader(children=indicators_dropdowns),
+                            dbc.CardBody(children=[html.Div(html.H1('123'),
+                                                    style=model_card_style
+                                                )
+                                            ],
+                                            class_name='mx-auto'
+                                            ),
+                            dbc.CardFooter()
+                            ]
+                               )
+
 
 model_prediction_show = html.Div([dbc.Container(
-                                                [dbc.Row()
+                                                [html.Br(), html.Br(),
+                                                 dbc.Row(children=[prediction_board])
                                                  ]
                                                 )
                                   ]
