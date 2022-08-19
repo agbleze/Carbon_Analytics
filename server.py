@@ -14,7 +14,7 @@ from features.pages_show import (analytics_sidebar,
                                  emission_prediction_layout, 
                                  hypothesis_layout,
                                  country_layout,
-                                 fuel_type_emission,
+                                 fuel_type_emission_layout,
                                  state_emission,
                                  sector_emission,
                                  model_description,
@@ -22,10 +22,12 @@ from features.pages_show import (analytics_sidebar,
                                  model_prediction_show
                                  
                                  )
+from features.visualization import (make_boxplot, plot_histogram)
 
 import pandas as pd
 
 fuel_type_emission = pd.read_csv('data/fuel_type_emission.csv')
+total_emission_df = pd.read_csv('data/total_emission_df.csv')
 
 app_description = create_page_with_card_button()
 
@@ -64,7 +66,7 @@ def render_country_layout(country_button_click, state_button_click,
     elif button_clicked == 'id_state':
         return state_emission
     elif button_clicked == 'id_fuel':
-        return fuel_type_emission
+        return fuel_type_emission_layout
     elif button_clicked == 'id_sector':
         return sector_emission
 
@@ -88,7 +90,18 @@ def render_prediction_layout(desc_model_button, eval_model_button, model_predict
     
     
 @callback(Output(component_id='id_avg_petrol_emission', component_property='children'),
-          Input(component_id='id_country', component_property='n_clicks_timestamp'))
+          Output(component_id='id_avg_electricity_emission', component_property='children'),
+          Output(component_id='id_avg_diesel_emission', component_property='children'),
+          Output(component_id='id_avg_lpg_emission', component_property='children'),
+          Output(component_id='id_avg_firewood_emission', component_property='children'),
+          Output(component_id='id_avg_charcoal_emission', component_property='children'),
+          Output(component_id='id_avg_kerosene_emission', component_property='children'),
+          Output(component_id='id_avg_all_emission', component_property='children'),
+          Output(component_id='id_graph_hist_country', component_property='figure'),
+          Output(component_id='id_graph_box_country', component_property='figure'),
+          Output(component_id='id_graph_bubble_country', component_property='figure'),
+          Input(component_id='id_country', component_property='n_clicks_timestamp')
+          )
 def render_country_emission(country_button):
     ctx = callback_context
     button_clicked = ctx.triggered[0]['prop_id'].split('.')[0]
@@ -97,6 +110,24 @@ def render_country_emission(country_button):
         PreventUpdate
         
     avg_petrol_emission = fuel_type_emission['petrol'].mean()
+    avg_electricity_emission = fuel_type_emission['electricity'].mean()
+    avg_diesel_emission = fuel_type_emission['diesel'].mean()
+    avg_lpg_emission = fuel_type_emission['lpg'].mean()
+    avg_firewood_emission = fuel_type_emission['firewood'].mean()
+    avg_charcoal_emission = fuel_type_emission['charcoal'].mean()
+    avg_kerosene_emission = fuel_type_emission['kerosene'].mean()
+    avg_all_emission = total_emission_df['total_CO2_kg'].mean()
     
-    return round(avg_petrol_emission, 2)
+    country_hist_graph = plot_histogram(data=total_emission_df, colname='total_CO2_kg')
+    country_box_graph = make_boxplot(data=total_emission_df, variable_name='total_CO2_kg')
+    
+    return (round(avg_petrol_emission, 2),
+            round(avg_electricity_emission, 2),
+            round(avg_diesel_emission, 2),
+            round(avg_lpg_emission, 2),
+            round(avg_firewood_emission, 2),
+            round(avg_charcoal_emission, 2),
+            round(avg_kerosene_emission, 2),
+            round(avg_all_emission, 2)
+            )
     
