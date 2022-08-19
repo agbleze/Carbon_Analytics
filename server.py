@@ -22,13 +22,16 @@ from features.pages_show import (analytics_sidebar,
                                  model_prediction_show
                                  
                                  )
-from features.visualization import (make_boxplot, plot_histogram)
+from features.visualization import (make_boxplot, plot_histogram, plot_bubble_chart)
 
 import pandas as pd
+from datar.all import case_when, f, mutate, pivot_wider
 
+#%%
 fuel_type_emission = pd.read_csv('data/fuel_type_emission.csv')
 total_emission_df = pd.read_csv('data/total_emission_df.csv')
 
+#%%
 app_description = create_page_with_card_button()
 
 
@@ -118,8 +121,15 @@ def render_country_emission(country_button):
     avg_kerosene_emission = fuel_type_emission['kerosene'].mean()
     avg_all_emission = total_emission_df['total_CO2_kg'].mean()
     
+    avg_emission_per_state = total_emission_df.groupby('state_name')['total_CO2_kg'].mean().reset_index()
+    
     country_hist_graph = plot_histogram(data=total_emission_df, colname='total_CO2_kg')
     country_box_graph = make_boxplot(data=total_emission_df, variable_name='total_CO2_kg')
+    country_bubble_graph = plot_bubble_chart(data=avg_emission_per_state, x_axis='state_name',
+                                            y_axis='total_CO2_kg',
+                                            bubble_size='total_CO2_kg',
+                                            title='Average emission in each state in Nigeria'
+                                        )
     
     return (round(avg_petrol_emission, 2),
             round(avg_electricity_emission, 2),
@@ -128,6 +138,41 @@ def render_country_emission(country_button):
             round(avg_firewood_emission, 2),
             round(avg_charcoal_emission, 2),
             round(avg_kerosene_emission, 2),
-            round(avg_all_emission, 2)
+            round(avg_all_emission, 2),
+            country_hist_graph,
+            country_box_graph,
+            country_bubble_graph
             )
     
+
+
+@callback(Output(component_id='id_avg_state_emission', component_property='children'),
+          Output(component_id='id_graph_hist_state', component_property='figure'),
+          Output(component_id='id_graph_box_state', component_property='figure'),
+          Input(component_id='id_state_dropdown', component_property='value')
+          )
+def render_state_emission(state_selected):
+    state_emission = total_emission_df[total_emission_df['state_name']==state_selected]#['total_CO2_kg'].mean()
+    avg_state_emission = state_emission['total_CO2_kg'].mean()
+    graph_hist_state = plot_histogram(data=state_emission, colname='total_CO2_kg')
+    graph_box_state = make_boxplot(data=state_emission, variable_name='total_CO2_kg')
+    return (avg_state_emission, 
+            graph_hist_state, 
+            graph_box_state
+            )
+
+
+
+
+
+#%%
+pd.melt(fuel_type_emission,id_vars=['state_name', 'lga'], value_vars=['petrol', 'kerosene','lpg', 
+                                        'electricity',	'charcoal',	
+                                        'diesel', 'firewood'
+                                        ], 
+        var_name='fuel_type', 
+        value_name='total_emission'
+        )
+
+
+# %%
