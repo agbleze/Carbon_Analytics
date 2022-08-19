@@ -39,20 +39,28 @@ country_layout = html.Div(
                 dbc.Row(
                     [ output_card_alpha(loading_head_id='id_avg_all_emission', card_title='Average emission (all fuel type)'),
                         output_card_alpha(loading_head_id='id_avg_petrol_emission', card_title='Average emission (Petrol)'),
-                        output_card_alpha(col_id='id_avg_electricity_emission', card_title='Average emission (Electricity)'),
-                        output_card_alpha(col_id='id_avg_diesel_emission', card_title='Average emission (Diesel)')                        
+                        output_card_alpha(loading_head_id='id_avg_electricity_emission', card_title='Average emission (Electricity)'),
+                        output_card_alpha(loading_head_id='id_avg_diesel_emission', card_title='Average emission (Diesel)')                        
                     ]
                 ),
                 html.Br(), html.Br(),
                 dbc.Row(
-                    [ output_card_alpha(col_id='id_avg_lpg_emission', card_title='Average emission (LPG)'),
-                        output_card_alpha(col_id='id_avg_firewood_emission', card_title='Average emission (Firewood)'),
-                        output_card_alpha(col_id='id_avg_charcoal_emission', card_title='Average emission (Charcoal)'),
-                        output_card_alpha(col_id='id_avg_kerosene_emission', card_title='Average emission (Kerosene)')       
+                    [ output_card_alpha(loading_head_id='id_avg_lpg_emission', card_title='Average emission (LPG)'),
+                        output_card_alpha(loading_head_id='id_avg_firewood_emission', card_title='Average emission (Firewood)'),
+                        output_card_alpha(loading_head_id='id_avg_charcoal_emission', card_title='Average emission (Charcoal)'),
+                        output_card_alpha(loading_head_id='id_avg_kerosene_emission', card_title='Average emission (Kerosene)')       
                     ]
                 ),
                 
                 html.Br(), html.Br(),
+                dbc.Row([dbc.Col(#lg=6, 
+                                 children=[dbc.Label('Average Emission in each state'), 
+                                            dcc.Graph(id='id_graph_bubble_country')
+                                        ]
+                                )
+                         ]
+                        ),
+                html.Br(),
                 dbc.Row([dbc.Col(lg=6,
                                  children=[dbc.Label('Histogram distribution'),
                                   dcc.Graph(id='id_graph_hist_country')
@@ -64,15 +72,8 @@ country_layout = html.Div(
                                         ]
                                 )
                          ]
-                        ),
-                html.Br(),
-                dbc.Row([dbc.Col(lg=6, 
-                                 children=[dbc.Label('Average Emission in each state'), 
-                                            dcc.Graph(id='id_graph_bubble_country')
-                                        ]
-                                )
-                         ]
                         )
+                
             ]
         )
     ]
@@ -125,7 +126,7 @@ state_emission = dbc.Container(
                     children=[
                         dbc.Label("Select State"),
                         dcc.Dropdown(id='id_state_dropdown',
-                                     options=[{'label': state, 'value': state} for state in df['state'].unique()]
+                                     options=[{'label': state, 'value': state} for state in df['state_name'].unique()]
                                     ),
                     ],
                 ),
@@ -135,7 +136,7 @@ state_emission = dbc.Container(
                         dbc.Row(
                             [
                                 dbc.Label(id='selected_state_emission'),
-                                output_card_alpha(col_id='id_avg_state_emission', card_title='Average emission')
+                                output_card_alpha(loading_head_id='id_avg_state_emission', card_title='Average emission')
                             ]
                         ),
                         html.Br(),
@@ -409,7 +410,7 @@ hypothesis_layout = html.Div(
 
 content_5 = html.Div("")
 
-fuel_type_emission = html.Div(
+fuel_type_emission_layout = html.Div(
     [
         dbc.Container(
             [
