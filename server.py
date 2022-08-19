@@ -23,6 +23,9 @@ from features.pages_show import (analytics_sidebar,
                                  
                                  )
 
+import pandas as pd
+
+fuel_type_emission = pd.read_csv('data/fuel_type_emission.csv')
 
 app_description = create_page_with_card_button()
 
@@ -82,3 +85,18 @@ def render_prediction_layout(desc_model_button, eval_model_button, model_predict
         return model_evaluation
     elif button_clicked == 'model_predict_sidebutton':
         return model_prediction_show
+    
+    
+@callback(Output(component_id='id_avg_petrol_emission', component_property='children'),
+          Input(component_id='id_country', component_property='n_clicks_timestamp'))
+def render_country_emission(country_button):
+    ctx = callback_context
+    button_clicked = ctx.triggered[0]['prop_id'].split('.')[0]
+    
+    if button_clicked != 'id_country':
+        PreventUpdate
+        
+    avg_petrol_emission = fuel_type_emission['petrol'].mean()
+    
+    return round(avg_petrol_emission, 2)
+    
