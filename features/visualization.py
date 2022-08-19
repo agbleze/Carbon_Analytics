@@ -32,3 +32,24 @@ def plot_histogram(data: pd.DataFrame, colname: str):
                        template='plotly_dark'
                        )
     return fig
+
+def plot_bubble_chart(data: pd.DataFrame, x_axis: str, 
+                      y_axis: str, 
+                      bubble_size: str,
+                      title: str):
+    """_summary_
+
+    Args:
+        data (pd.DataFrame): _description_
+        x_axis (str): _description_
+        y_axis (str): _description_
+        bubble_size (str): _description_
+    """
+    fig = px.scatter(data_frame=data, x=x_axis, 
+                    y=y_axis, size=bubble_size,
+                    title=title, color=x_axis,
+                    height=700, template='plotly_dark'
+                    )
+    return fig
+
+
