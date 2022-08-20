@@ -86,7 +86,7 @@ sector_emission = html.Div(dbc.Container(
                                 dbc.Label('Select sector'), 
                                 dcc.Dropdown(id='id_sector_dropdown',
                                             options=[{'label': sector, 'value': sector} 
-                                                    for sector in df['sector']
+                                                    for sector in df['sector'].unique()
                                                     ]
                                             )
                         ]
@@ -277,7 +277,7 @@ dcc.Dropdown(id='id_sector_dropdown',
             )   
     
 indicators_dropdowns = dbc.Container([dbc.Row(
-                        children=[dbc.Col([create_dropdown(id='id_state_name', colname='state', data=df)]
+                        children=[dbc.Col([create_dropdown(id='id_state_name', colname='state_name', data=df)]
                             ),
                         dbc.Col([create_dropdown(id='id_lga_name', colname='lga', data=df)]),
                         dbc.Col([create_dropdown(id='id_sector_name', colname='sector', data=df)])
@@ -417,20 +417,23 @@ fuel_type_emission_layout = html.Div(
                 dbc.Row(
                     [
                         dbc.Col(lg=3, children=[dbc.Label('Select fuel type'), 
-                                                dcc.Dropdown(id='id_fuel_type',
+                                                dcc.Dropdown(id='id_fuel_type_dropdown',
                                                              options=[{'label': fuel_type, 'value': fuel_type}
-                                                                      for fuel_type in ['kerosene', 'petrol', 'diesel']
+                                                                      for fuel_type in ['kerosene', 'petrol', 'diesel', 'lgp',
+                                                                                        'firewood', 'electricity', 'charcoal'
+                                                                                        ]
                                                                       ]
                                                              )
                                                 ],
                         ),
-                        dbc.Col(lg=3, children=[dbc.Label('Select state'),dcc.Dropdown(id='id_state_fuel',
-                                                                                       options=[{'label': state, 'value': state} for state in df["state"]
+                        dbc.Col(lg=3, children=[dbc.Label('Select state'),dcc.Dropdown(id='id_state_fuel_dropdown',
+                                                                                       options=[{'label': state, 'value': state} 
+                                                                                                for state in df["state_name"].unique()
                                                                                                 ]
                                                                                        )
                                                 ]
                                 ),
-                        dbc.Col(lg=6, children=[output_card_alpha(col_id='id_avg_fuel_emission',
+                        dbc.Col(lg=6, children=[output_card_alpha(loading_head_id='id_avg_fuel_emission',
                                                                   card_title='Average emission'
                                                                   ),
                                                 ]
