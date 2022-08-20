@@ -31,6 +31,16 @@ from datar.all import case_when, f, mutate, pivot_wider
 fuel_type_emission = pd.read_csv('data/fuel_type_emission.csv')
 total_emission_df = pd.read_csv('data/total_emission_df.csv')
 
+fuel_type_emission_long = pd.melt(fuel_type_emission,id_vars=['state_name', 'sector', 'lga'], 
+                                    value_vars=['petrol', 'kerosene','lpg', 
+                                                'electricity',	'charcoal',	
+                                                'diesel', 'firewood'
+                                                ], 
+                                    var_name='fuel_type', 
+                                    value_name='total_emission'
+                                    )
+
+
 #%%
 app_description = create_page_with_card_button()
 
@@ -149,16 +159,27 @@ def render_country_emission(country_button):
 @callback(Output(component_id='id_avg_state_emission', component_property='children'),
           Output(component_id='id_graph_hist_state', component_property='figure'),
           Output(component_id='id_graph_box_state', component_property='figure'),
+          Output(component_id='id_graph_bubble_state', component_property='figure'),
           Input(component_id='id_state_dropdown', component_property='value')
           )
 def render_state_emission(state_selected):
     state_emission = total_emission_df[total_emission_df['state_name']==state_selected]#['total_CO2_kg'].mean()
+    fuel_type_emit = (fuel_type_emission_long[fuel_type_emission_long['state_name']==state_selected]
+                      .groupby(['fuel_type'])['total_emission'].mean().reset_index()
+                      )
+    fuel_type_emit.rename(columns={'total_emission': 'average_co2_emission'}, inplace=True)
     avg_state_emission = state_emission['total_CO2_kg'].mean()
     graph_hist_state = plot_histogram(data=state_emission, colname='total_CO2_kg')
     graph_box_state = make_boxplot(data=state_emission, variable_name='total_CO2_kg')
-    return (avg_state_emission, 
+    graph_bubble_state = plot_bubble_chart(data=fuel_type_emit, x_axis='fuel_type', 
+                                           y_axis='average_co2_emission', 
+                                            bubble_size='average_co2_emission', 
+                                            title=f'Average Co2 emission in {state_selected} per fuel type'
+                                            )
+    return (round(avg_state_emission, 2), 
             graph_hist_state, 
-            graph_box_state
+            graph_box_state,
+            graph_bubble_state
             )
 
 
@@ -166,13 +187,33 @@ def render_state_emission(state_selected):
 
 
 #%%
-pd.melt(fuel_type_emission,id_vars=['state_name', 'lga'], value_vars=['petrol', 'kerosene','lpg', 
-                                        'electricity',	'charcoal',	
-                                        'diesel', 'firewood'
-                                        ], 
-        var_name='fuel_type', 
-        value_name='total_emission'
-        )
+@callback(Output(component_id='id_avg_fuel_emission', component_property='children'),
+          Output(component_id='id_graph_hist_fuel', component_property='figure'),
+          Output(component_id='id_graph_box_fuel', component_property='figure'),
+          Input(component_id='id_fuel_type_dropdown', component_property='value'),
+          Input(component_id='id_state_fuel_dropdown', component_property='value'),
+          Input(component_id='id_fuel', component_property='n_clicks_timestamp')
+          )
+def render_fuel_type(fuel_selected, state_selected, fuel_sidebar_button):
+    ctx = callback_context
+    button_clicked = ctx.triggered[0]['prop_id'].split('.')[0]
+    
+    if (not fuel_selected) or (not state_selected) or  button_clicked != 'id_fuel':
+        PreventUpdate
+    
+    data_selected = fuel_type_emission_long[(fuel_type_emission_long['state_name']==state_selected) & 
+                            (fuel_type_emission_long['fuel_type']==fuel_selected)
+                            ]   
+    
+    avg_fuel_emission = data_selected[['total_emission']].mean() 
+    #avg_fuel_emission.rename(columns={'total_emission': 'Average Co2 emission (kg)'}, inplace=True)
+    graph_hist_fuel = plot_histogram(data=data_selected, colname='total_emission')
+    graph_box_fuel = make_boxplot(data=data_selected, variable_name='total_emission')
+    
+    return (round(avg_fuel_emission, 2),
+            graph_hist_fuel,
+            graph_box_fuel
+            )
 
 
 # %%
