@@ -216,4 +216,38 @@ def render_fuel_type(fuel_selected, state_selected, fuel_sidebar_button):
             )
 
 
-# %%
+@callback(Output(component_id='id_avg_sector_emission', component_property='children'),
+          Output(component_id='id_graph_bubble_sector_state_emission', component_property='figure'),
+          Output(component_id='id_graph_bubble_sector_fuel_emission', component_property='figure'),
+          Input(component_id='id_sector_dropdown', component_property='value'),
+          Input(component_id='id_sector', component_property='n_clicks_timestamp')
+          )
+def render_sector_layout(sector_selected, sector_sidebar_button):
+    ctx = callback_context
+    button_clicked = ctx.triggered[0]['prop_id'].split('.')[0]
+    
+    if (not sector_selected) or (button_clicked != 'id_sector'):
+        PreventUpdate
+    
+    sector_data = fuel_type_emission_long[fuel_type_emission_long['sector'] == sector_selected]
+    
+    avg_sector_emission = sector_data['total_emission'].mean()
+    avg_sector_state_df = sector_data.groupby('state_name')['total_emission'].mean().reset_index()
+    avg_sector_fuel_df = sector_data.groupby('fuel_type')['total_emission'].mean().reset_index()
+
+    graph_sector_state = plot_bubble_chart(data=avg_sector_state_df, x_axis='state_name',
+                                            y_axis='total_emission', bubble_size='total_emission',
+                                            title=f'Average co2 emission (kg) per {sector_selected} states'
+                                            )
+    
+    graph_sector_fuel = plot_bubble_chart(data=avg_sector_fuel_df, x_axis='fuel_type',
+                                            y_axis='total_emission', bubble_size='total_emission',
+                                            title=f'Average co2 emission (kg) per fuel type in {sector_selected}'
+                                            )
+    
+    return (round(avg_sector_emission, 2), 
+            graph_sector_state, 
+            graph_sector_fuel
+            )
+
+
