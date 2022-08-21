@@ -1,7 +1,7 @@
 # make lasso model
 from sklearn.linear_model import LassoCV
 from sklearn.pipeline import make_pipeline
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, r2_score
 import numpy as np
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import mean_squared_error
@@ -36,7 +36,9 @@ if __name__ == '__main__':
     y_pred_lasso = lasso_pipeline.predict(X_test)
 
     rmse = mean_squared_error(y_true=y_test, y_pred=y_pred_lasso, squared=False)
+    r2 = r2_score(y_true=y_train, y_pred=lasso_pipeline.predict(X_train))
     print(f'lasso test rmse: {rmse}')
+    print(f'LassoCV train R2: {r2}')
 
 
 
