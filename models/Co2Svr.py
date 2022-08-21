@@ -1,7 +1,7 @@
 #%%
 from sklearn.svm import SVR
 from sklearn.pipeline import make_pipeline
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, r2_score
 from preprocess_pipeline import (linear_model_preprocess_pipeline, 
                                         X_train, 
                                         X_test, 
@@ -28,7 +28,9 @@ if __name__ == '__main__':
     y_pred_svrrbd = svr_rbf_pipeline.predict(X_test)
 
     rmse = mean_squared_error(y_true=y_test, y_pred=y_pred_svrrbd, squared=False)
-    print(f'SVR rmse: {rmse}')
+    r2 = r2_score(y_true=y_train, y_pred=svr_rbf_pipeline.predict(X_train))
+    print(f'SVR test rmse: {rmse}')
+    print(f'SVR train R2: {r2}')
 
 
 
