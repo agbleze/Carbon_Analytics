@@ -1,5 +1,13 @@
 from dash import dcc, html
 import dash_bootstrap_components as dbc
+
+import pandas as pd
+import datar as dr
+from datar import dplyr, f
+from datar import tidyr
+import datar.all as all
+import datar.base as base
+
 from StyleDisplay.style import (cardbody_style, 
                                  card_icon, cardimg_style, 
                                  card_style,
@@ -164,7 +172,7 @@ def output_card_alpha(col_id: str = 'col_id_test',
                       
                       ):
 
-    output_card = dbc.Col(
+    output_card_alpha = dbc.Col(
             id=col_id,
             children=[
                 dbc.CardGroup(
@@ -220,13 +228,34 @@ def output_card_alpha(col_id: str = 'col_id_test',
                             style=popover_body_style,
                         ),
                     ],
-                    target=target_id,
+                    target=col_id,
                     trigger=trigger_type,
                 ),
             ],
         )
     
-    return output_card
+    return output_card_alpha
 
 
 
+
+def create_state_name(data: pd.DataFrame):
+  return dplyr.mutate(data,
+              state_name=dplyr.case_when(f.state==1,'Abia', f.state==2,'Adamawa',f.state==3,'Akwa Ibom',
+                                        f.state==4,'Anambra',f.state==5,'Bauchi',f.state==6,'Bayelsa',
+                                        f.state==7,'Benue',f.state==8,'Borno',f.state==9,'Cross River',
+                                      f.state==10,'Delta', f.state==11,'Ebonyi',f.state==12,'Edo', 
+                                      f.state==13,'Ekiti', f.state==14,'Enugu',f.state==15,'Gombe',
+                                      f.state==16,'Imo',f.state==17,'Jigawa',f.state==18,'Kaduna',
+                                        f.state==19,'Kano',f.state==20,'Katsina',f.state==21,'Kebbi',
+                                        f.state==22,'Kogi',f.state==23,'Kwara',f.state==24,'Lagos',
+                                        f.state==25,'Nasarawa',f.state==26,'Niger',f.state==27,'Ogun',
+                                        f.state==28,'Ondo',f.state==29,'Osun',f.state==30,'Oyo',
+                                        f.state==31,'Plateau',f.state==32,'Rivers',f.state==33,'Sokoto',
+                                      f.state==34,'Taraba',f.state==35,'Yobe',f.state==36,'Zamfara',
+                                        f.state==37,'FCT Abuja')
+                      #.drop(columns='state')
+                      )
+  
+  
+  
