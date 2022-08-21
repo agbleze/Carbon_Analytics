@@ -10,17 +10,17 @@ from sklearn.model_selection import train_test_split
 
 total_emission_df = pd.read_csv(r'data/total_emission_df.csv')
 
-X_all = total_emission_df[['state',	'lga',	'sector',	'credit_mean',	'income_mean']]
+X_all = total_emission_df[['state_name',	'lga',	'sector',	'credit_mean',	'income_mean']]
 
 #%%
 ord_encode = OrdinalEncoder()
-feature_ordinal_encoded = ord_encode.fit_transform(X_all[['sector', 'state', 'lga']])
+feature_ordinal_encoded = ord_encode.fit_transform(X_all[['sector', 'state_name', 'lga']])
 
 encoded_features = pd.DataFrame(feature_ordinal_encoded, columns=['sector_encode', 'state_encode', 'lga_encode'])
 
 total_emission_df[['sector_encoded', 'state_encoded', 'lga_encoded']] = encoded_features
 
-X = total_emission_df[['state',	'lga',	'sector',	'credit_mean',	'income_mean']]
+X = total_emission_df[['state_name',	'lga',	'sector',	'credit_mean',	'income_mean']]
 y = total_emission_df['total_CO2_kg']
 
 
@@ -33,7 +33,7 @@ impute_missing_predictor_values = SimpleImputer(strategy='mean',
                                                 add_indicator=True
                                                 )
 decision_tree_data_preprocess = make_column_transformer((impute_missing_predictor_values, ['credit_mean', 'income_mean']),
-                                                        (ordinal_preprocess, ['sector', 'state', 'lga'])
+                                                        (ordinal_preprocess, ['sector', 'state_name', 'lga'])
                                                         )
 
 #%%
@@ -43,7 +43,7 @@ num_column_preprocess_linear_ml = make_pipeline(impute_missing_predictor_values,
                                                 StandardScaler(),
                                                 )
 linear_model_preprocess_pipeline = make_column_transformer((num_column_preprocess_linear_ml, ['credit_mean', 'income_mean']),
-                                                           (ohe_preprocess, ['state', 'sector', 'lga'])
+                                                           (ohe_preprocess, ['state_name', 'sector', 'lga'])
                                                            )
 
 
