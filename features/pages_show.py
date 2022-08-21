@@ -91,7 +91,7 @@ sector_emission = html.Div(dbc.Container(
                                             )
                         ]
                     ),
-              dbc.Col([output_card_alpha(col_id='id_avg_sector_emission', 
+              dbc.Col([output_card_alpha(loading_head_id='id_avg_sector_emission', 
                                          card_title='sector emission',
                                          )
                        ]
