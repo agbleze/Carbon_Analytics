@@ -10,6 +10,9 @@ from preprocess_pipeline import (linear_model_preprocess_pipeline,
                                         y_test
                                         )
 import pandas as pd
+import numpy as np
+
+from sklearn.model_selection import cross_validate
 
 knn = KNeighborsRegressor(n_neighbors=10)
 
@@ -49,6 +52,16 @@ if __name__ == '__main__':
   
   print(f'KNN Test RMSE: {knn_rmse_test}')
   print(f'KNN train R2: {knn_r2_train}')
+  
+  # for i in [(12, 'eg')]:
+  #   print(i) 
+  score = cross_validate(estimator=knn_pipeline, X=X_train, y=y_train, cv=10,
+                 scoring=('neg_mean_squared_error'),
+                 return_train_score=False)
+  test_score_dict = {'test_score': -(score['test_score']) }
+  df = pd.DataFrame(data=test_score_dict)
+  print(df)
+  #print(score['test_score'])
   
   
   
