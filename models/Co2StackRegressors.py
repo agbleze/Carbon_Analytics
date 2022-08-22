@@ -2,9 +2,15 @@
 from sklearn.linear_model import RidgeCV
 from sklearn.ensemble import  StackingRegressor
 from sklearn.model_selection import train_test_split
-from models.Co2Rfregressor import rf_pipeline
-from models.Co2LassoRegressor import lasso_pipeline
-from models.Co2HistgradientImputed import hgb_pipeline
+from Co2Rfregressor import rf_pipeline
+from Co2LassoRegressor import lasso_pipeline
+from Co2HistgradientImputed import hgb_pipeline
+from sklearn.metrics import  mean_squared_error, r2_score
+from preprocess_pipeline import (X_train, 
+                                X_test, 
+                                y_train,
+                                y_test
+                                )
 
 
 ridge = RidgeCV()
@@ -16,17 +22,19 @@ stack_regressors = StackingRegressor(estimators=all_models, final_estimator=ridg
 
 
 #%%
-X_all_raw = total_emission_df[['state',	'lga',	'sector',	'credit_mean',	'income_mean']]
+# X_all_raw = total_emission_df[['state',	'lga',	'sector',	'credit_mean',	'income_mean']]
+
+# #%%
+# X_raw_train, X_raw_test, y_raw_train, y_raw_test = train_test_split(X_all_raw, y, test_size=0.3, random_state=0)
 
 #%%
-X_raw_train, X_raw_test, y_raw_train, y_raw_test = train_test_split(X_all_raw, y, test_size=0.3, random_state=0)
+if __name__ == '__main__':
+    stack_regressors.fit(X=X_train, y=y_train)
 
-#%%
-stack_regressors.fit(X=X_raw_train, y=y_raw_train)
+    #%%
+    y_pred_stack = stack_regressors.predict(X_test)
 
-#%%
-y_pred_stack = stack_regressors.predict(X_raw_test)
-
-#%%
-mean_squared_error(y_true=y_raw_test, y_pred=y_pred_stack, squared=False)
+    #%%
+    rmse = mean_squared_error(y_true=y_test, y_pred=y_pred_stack, squared=False)
+    print(f'Stacked models test RMSE: {rmse}')
 
