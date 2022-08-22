@@ -8,8 +8,8 @@ card_icon = {
 equipment_widget_style = {"backgroundColor": "#3CB371", "maxWidth": 75}
 
 button_style = {
-    "width": "110%",
-    "borderRadius": 0,
+    "width": "70%",
+    "borderRadius": 10,
     "backgroundColor": "#696969",
 }
 
