@@ -12,9 +12,20 @@ from sklearn.model_selection import (cross_val_score,
                                      cross_val_predict
                                      )
 
+from features.helper_components import create_state_name
 
 #%%
 sect11b_harvestw3 = pd.read_csv(r'data/sect11b_harvestw3.csv')
+
+#%%
+sect11b_harvestw3 = dplyr.mutate(
+                                  sect11b_harvestw3,
+                                  sector=dplyr.case_when(f.sector == 1, "URBAN", 
+                                                              f.sector == 2, "RURAL"),
+                              )#.drop(columns="sector")
+
+#%%
+sect11b_harvestw3 = create_state_name(data=sect11b_harvestw3)
 
 #%%
 fuel_data_harvest = (sect11b_harvestw3 >> 
@@ -40,7 +51,7 @@ fuel_data_harvest = (sect11b_harvestw3 >>
 
 
 #%%
-fuel_data_harvest_sum = (fuel_data_harvest.groupby(by=['state', 'lga', 'sector', 'hhid'])
+fuel_data_harvest_sum = (fuel_data_harvest.groupby(by=['state', 'state_name','lga', 'sector', 'hhid'])
                          ["CHARCOAL", "DIESEL", "ELECTRICITY",
                          "KEROSENE","GAS", "PETROL", "FIREWOOD"]
                          .agg('sum')
@@ -50,7 +61,7 @@ fuel_data_harvest_sum = (fuel_data_harvest.groupby(by=['state', 'lga', 'sector',
 #%%
 ### estimate co2 emission for petrol at household level
 petrol_data_harvet_CO2emission = (fuel_data_harvest_sum >> 
-                                  dplyr.select(f[0:4], f.PETROL) >>
+                                  dplyr.select(f[0:4], f.state_name, f.PETROL) >>
                                     dplyr.mutate(petrol_total_expend = f.PETROL,
                                                 price_per_ltr = 87, 
                                                 total_ltr_consumed = (f.petrol_total_expend / f.price_per_ltr), 
@@ -61,7 +72,7 @@ petrol_data_harvet_CO2emission = (fuel_data_harvest_sum >>
 
 #%%
 ### estimate co2 emission for kerosene at household level
-kerosene_data_harvest_CO2emission = (fuel_data_harvest_sum >> dplyr.select(f[0:4], f.KEROSENE) >>
+kerosene_data_harvest_CO2emission = (fuel_data_harvest_sum >> dplyr.select(f[0:4], f.state_name, f.KEROSENE) >>
                           dplyr.mutate(kerosene_total_expend = f.KEROSENE,
                                        price_per_ltr = 50,
                                        total_ltr_consumed = (f.kerosene_total_expend/f.price_per_ltr),
@@ -73,7 +84,7 @@ kerosene_data_harvest_CO2emission = (fuel_data_harvest_sum >> dplyr.select(f[0:4
 #%%
 ### estimate co2 emission for LPG at household level
 lpgas_data_harvest_CO2emission = (fuel_data_harvest_sum >> 
-                                  dplyr.select(f[0:4], f.GAS) >>
+                                  dplyr.select(f[0:4], f.state_name, f.GAS) >>
                                     dplyr.mutate(gas_total_expend = f.GAS, 
                                                 price_per_ltr = 368.396,
                                                 total_kg_consumed = (f.gas_total_expend/f.price_per_ltr), 
@@ -87,7 +98,7 @@ lpgas_data_harvest_CO2emission = (fuel_data_harvest_sum >>
 #%%
 ### estimate co2 emission for electricity at household level
 electricity_data_harvest_CO2emission = (fuel_data_harvest_sum >> 
-                                        dplyr.select(f[0:4], f.ELECTRICITY) >>
+                                        dplyr.select(f[0:4], f.state_name, f.ELECTRICITY) >>
                                         dplyr.mutate(electricity_total_expend = f.ELECTRICITY, 
                                                     price_per_KWh = 29, 
                                                     total_KWh_consumed = (f.electricity_total_expend/f.price_per_KWh),
@@ -98,7 +109,7 @@ electricity_data_harvest_CO2emission = (fuel_data_harvest_sum >>
 
 #%%
 ## estimate co2 emission for charcoal at household level
-charcoal_data_harvest_co2emission = (fuel_data_harvest_sum >> dplyr.select(f[0:4], f.CHARCOAL) >>
+charcoal_data_harvest_co2emission = (fuel_data_harvest_sum >> dplyr.select(f[0:4], f.state_name, f.CHARCOAL) >>
                                                             dplyr.mutate(charcoal_total_expend = f.CHARCOAL, 
                                                                         price_per_kg = 13.542815, 
                                                                         total_kg_consumed = (f.charcoal_total_expend/f.price_per_kg),
@@ -112,7 +123,7 @@ charcoal_data_harvest_co2emission = (fuel_data_harvest_sum >> dplyr.select(f[0:4
 #%%
 ## ESTIMATE CO2 EMSSIONS FOR DIESIEL 
 diesel_data_harvest_co2emission = (fuel_data_harvest_sum >> 
-                                   dplyr.select(f[0:4], f.DIESEL) >>
+                                   dplyr.select(f[0:4], f.state_name, f.DIESEL) >>
                                     dplyr.mutate(diesel_total_expend = f.DIESEL, 
                                                 price_per_ltr = 145, 
                                                 total_ltr_consumed = (f.diesel_total_expend / f.price_per_ltr),
@@ -124,7 +135,7 @@ diesel_data_harvest_co2emission = (fuel_data_harvest_sum >>
 #%%
 ## Estimate CO2 EMISSIONS FOR FIREWOOD
 firewood_data_harvest_co2emission = (fuel_data_harvest_sum >>
-                                      dplyr.select(fuel_data_harvest_sum[0:4], f.FIREWOOD) >>
+                                      dplyr.select(fuel_data_harvest_sum[0:4], f.state_name, f.FIREWOOD) >>
                                       dplyr.mutate(firewood_total_expend = f.FIREWOOD,
                                                     price_per_kg = 8.125689,
                                                     total_firewood_kg = (f.firewood_total_expend / f.price_per_kg),
@@ -141,6 +152,15 @@ firewood_data_harvest_co2emission = (fuel_data_harvest_sum >>
 # ASSIGN FUEL name to fuel eg df['PETRO'] = 'petrol'
 # Rename fuel to 'fuel_type' eg df.rename(columns='fuel_type')
 
+
+# %%
+colnames = ['petrol_total_CO2_emitted_kg', 'kerosene_total_CO2_emitted_kg', 
+            'lpgas_total_CO2_emitted_kg', 'electricity_total_CO2_emitted_kg', 
+            'charcoal_total_CO2_emitted_kg', 'diesel_total_CO2_emitted_kg',
+            'firewood_total_CO2_emitted_kg','state', 'lga', 'hhid', 'sector', 'state_name',
+            #'total_CO2_kg'
+            ]
+
 #%%
 df_merge = pd.concat([petrol_data_harvet_CO2emission,kerosene_data_harvest_CO2emission, 
                       lpgas_data_harvest_CO2emission, electricity_data_harvest_CO2emission, 
@@ -150,7 +170,30 @@ df_merge = pd.concat([petrol_data_harvet_CO2emission,kerosene_data_harvest_CO2em
                       ]
                     )
 
+#%%
+df_merge_raw_subset = df_merge[colnames]
 
+#%%
+fuel_type_emission = df_merge_raw_subset.rename(columns={'petrol_total_CO2_emitted_kg': 'petrol',
+                                    'kerosene_total_CO2_emitted_kg': 'kerosene',
+                                    'lpgas_total_CO2_emitted_kg': 'lpg',
+                                    'electricity_total_CO2_emitted_kg': 'electricity',
+                                    'charcoal_total_CO2_emitted_kg': 'charcoal',
+                                    'diesel_total_CO2_emitted_kg': 'diesel',
+                                    'firewood_total_CO2_emitted_kg': 'firewood'
+                                    }
+                           )
+
+
+#%%
+fuel_type_emission.to_csv('data/fuel_type_emission.csv')
+
+#%%
+#pd.wide_to_long(df_merge_raw_subset, 'petrol_total_CO2_emitted_kg',	'kerosene_total_CO2_emitted_kg')
+
+#tidyr.pivot_longer()
+
+#pd.melt(df_merge_raw_subset, id_vars=['petrol_total_CO2_emitted_kg', 'kerosene_total_CO2_emitted_kg'], value_vars=['petrol_total_CO2_emitted_kg', 'kerosene_total_CO2_emitted_kg'])
 
 
 # %%
@@ -160,13 +203,16 @@ df_merge.isnull().sum()
 from typing import List, Optional
 
 # %%
-colnames = ['petrol_total_CO2_emitted_kg', 'kerosene_total_CO2_emitted_kg', 
-            'lpgas_total_CO2_emitted_kg', 'electricity_total_CO2_emitted_kg', 
-            'charcoal_total_CO2_emitted_kg', 'diesel_total_CO2_emitted_kg',
-            'firewood_total_CO2_emitted_kg','state', 'lga', 'hhid', 'sector',
-            'total_CO2_kg'
-            ]
+# colnames = ['petrol_total_CO2_emitted_kg', 'kerosene_total_CO2_emitted_kg', 
+#             'lpgas_total_CO2_emitted_kg', 'electricity_total_CO2_emitted_kg', 
+#             'charcoal_total_CO2_emitted_kg', 'diesel_total_CO2_emitted_kg',
+#             'firewood_total_CO2_emitted_kg','state', 'lga', 'hhid', 'sector',
+#             'total_CO2_kg'
+#             ]
  
+colnames.append('total_CO2_kg')
+
+
 #%%
 # for colname in colnames:
 #   df_merge[colname].fillna(0, inplace= True)
@@ -204,13 +250,8 @@ co2_all_df = co2_data[co2_data['total_CO2_kg'] > 0]
 # %% find
 #co2_grp = co2_data.groupby(['state','lga', 'sector', 'hhid'])[['total_CO2_kg']].mean().reset_index()
 
-co2_all_mean = co2_all_df.groupby(['state','lga', 'sector', 'hhid'])[['total_CO2_kg']].mean().reset_index()
+co2_all_mean = co2_all_df.groupby(['state','state_name', 'lga', 'sector', 'hhid'])[['total_CO2_kg']].mean().reset_index()
 
-#%%
-#co2_grp
-
-# %%
-#co2_grp['hhid'].nunique()
 # %%
 # s3q21a HOW MUCH WAS YOUR LAST PAYMENT?(NAIRA)
 income_df = pd.read_csv(r'data/sect3_plantingw3.csv')
@@ -267,6 +308,27 @@ total_emission_df = co2_cred_income_merge.copy()
 
 #%%
 total_emission_df.dropna()
+
+#%%
+# total_emission_df=dplyr.mutate(total_emission_df,
+#                                state_name=dplyr.case_when(f.state==1,'Abia', f.state==2,'Adamawa',f.state==3,'Akwa Ibom',
+#                                                          f.state==4,'Anambra',f.state==5,'Bauchi',f.state==6,'Bayelsa',
+#                                                           f.state==7,'Benue',f.state==8,'Borno',f.state==9,'Cross River',
+#                                                         f.state==10,'Delta', f.state==11,'Ebonyi',f.state==12,'Edo', 
+#                                                         f.state==13,'Ekiti', f.state==14,'Enugu',f.state==15,'Gombe',
+#                                                         f.state==16,'Imo',f.state==17,'Jigawa',f.state==18,'Kaduna',
+#                                                           f.state==19,'Kano',f.state==20,'Katsina',f.state==21,'Kebbi',
+#                                                          f.state==22,'Kogi',f.state==23,'Kwara',f.state==24,'Lagos',
+#                                                          f.state==25,'Nasarawa',f.state==26,'Niger',f.state==27,'Ogun',
+#                                                          f.state==28,'Ondo',f.state==29,'Osun',f.state==30,'Oyo',
+#                                                          f.state==31,'Plateau',f.state==32,'Rivers',f.state==33,'Sokoto',
+#                                                         f.state==34,'Taraba',f.state==35,'Yobe',f.state==36,'Zamfara',
+#                                                          f.state==37,'FCT Abuja')
+#                                         #.drop(columns='state')
+#                                         )
+
+
+
 
 #%%
 total_emission_df.to_csv(r'data/total_emission_df.csv')
@@ -377,7 +439,7 @@ ord_encode = OrdinalEncoder()
 
 #%%
 #X_all[['sector_encode']] =
-sec_ord = ord_encode.fit_transform(X_all[['sector', 'state', 'lga']])
+sec_ord = ord_encode.fit_transform(X_all[['sector_name', 'state', 'lga']])
 
 encoded_features = pd.DataFrame(sec_ord, columns=['sector_encode', 'state_encode', 'lga_encode'])
 
@@ -435,7 +497,7 @@ impute_missing_predictor_values = SimpleImputer(strategy='mean',
                                                 add_indicator=True
                                                 )
 decision_tree_data_preprocess = make_column_transformer((impute_missing_predictor_values, ['credit_mean', 'income_mean']),
-                                                        (ordinal_preprocess, ['sector', 'state', 'lga'])
+                                                        (ordinal_preprocess, ['sector', 'state_name', 'lga'])
                                                         )
 
 #%%
@@ -445,7 +507,7 @@ num_column_preprocess_linear_ml = make_pipeline(impute_missing_predictor_values,
                                                 StandardScaler(),
                                                 )
 linear_model_preprocess_pipeline = make_column_transformer((num_column_preprocess_linear_ml, ['credit_mean', 'income_mean']),
-                                                           (ohe_preprocess, ['state', 'sector', 'lga'])
+                                                           (ohe_preprocess, ['state_name', 'sector', 'lga'])
                                                            )
 
 #%%
@@ -458,12 +520,12 @@ lasso_pipeline = make_pipeline(linear_model_preprocess_pipeline,
 #%%
 #LassoCV()._get_param_names
 
-linear_param_set = {'alpha': np.arange(0.0001, 1, 0.001),
-                    'selection': ['cyclic', 'random'],
-                    'eps': np.arange(0.0001, 1, 0.001),
-                    'tol': np.arange(0.0001, 1, 0.001),
-                    'n_alpha': range(100, 1000, 100)
-                  }
+# linear_param_set = {'alpha': np.arange(0.0001, 1, 0.001),
+#                     'selection': ['cyclic', 'random'],
+#                     'eps': np.arange(0.0001, 1, 0.001),
+#                     'tol': np.arange(0.0001, 1, 0.001),
+#                     'n_alpha': range(100, 1000, 100)
+#                   }
 
 
 
