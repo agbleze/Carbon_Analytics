@@ -23,9 +23,10 @@ from features.pages_show import (analytics_sidebar,
                                  
                                  )
 from features.visualization import (make_boxplot, plot_histogram, plot_bubble_chart)
-
+from models.models_evaluation import  plot_models_cv_test_error
 import pandas as pd
 from datar.all import case_when, f, mutate, pivot_wider
+
 
 #%%
 fuel_type_emission = pd.read_csv('data/fuel_type_emission.csv')
@@ -251,3 +252,10 @@ def render_sector_layout(sector_selected, sector_sidebar_button):
             )
 
 
+
+@callback(Output(component_id='', component_property=''),
+          Output(component_id='', component_property=''),
+          Input(component_id='', component_property='')
+          )
+def plot_models_error_estimates():
+    pass
