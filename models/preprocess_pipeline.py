@@ -8,7 +8,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 
-total_emission_df = pd.read_csv(r'data/total_emission_df.csv')
+total_emission_df = pd.read_csv(r'../data/total_emission_df.csv')
 
 X_all = total_emission_df[['state_name',	'lga',	'sector',	'credit_mean',	'income_mean']]
 
@@ -45,11 +45,6 @@ num_column_preprocess_linear_ml = make_pipeline(impute_missing_predictor_values,
 linear_model_preprocess_pipeline = make_column_transformer((num_column_preprocess_linear_ml, ['credit_mean', 'income_mean']),
                                                            (ohe_preprocess, ['state_name', 'sector', 'lga'])
                                                            )
-
-
-
-
-
 
 
 
