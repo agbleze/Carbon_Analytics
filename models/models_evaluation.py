@@ -60,15 +60,15 @@ def plot_models_cv_testerror(cv: int = 10, scoring: str ='neg_mean_squared_error
         df.drop(columns='test_score', inplace=True)
         test_score_list.append(df)
     cv_score_test_df = pd.concat(test_score_list)
-    print(cv_score_test_df)
+    #print(cv_score_test_df)
     mean_model_cv_rmse = cv_score_test_df.groupby('model')['test_RMSE'].mean().reset_index()
-    print(mean_model_cv_rmse)
+    #print(mean_model_cv_rmse)
     fig = px.box(data_frame=cv_score_test_df, x='model', y='test_RMSE', 
                  color='model',# notched=True, 
                  title=f'Test error of 10 fold cross validation on Models',
                  template='plotly_dark'
                  )
-    fig.show()
+    #fig.show()
     
     fig1 = px.scatter(data_frame=mean_model_cv_rmse, x='model', 
                       y='test_RMSE', color='model', symbol='model',
@@ -77,7 +77,8 @@ def plot_models_cv_testerror(cv: int = 10, scoring: str ='neg_mean_squared_error
             template='plotly_dark'
             )
     fig1.update_traces(marker_size=15)
-    fig1.show()
+    #fig1.show()
+    return {'test_rmse': fig, 'avg_test_rmse': fig1}
     
 
 import math 
