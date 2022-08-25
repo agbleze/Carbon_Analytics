@@ -2,7 +2,7 @@
 from sklearn.svm import SVR
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import mean_squared_error, r2_score
-from preprocess_pipeline import (linear_model_preprocess_pipeline, 
+from models.preprocess_pipeline import (linear_model_preprocess_pipeline, 
                                         X_train, 
                                         X_test, 
                                         y_train,
