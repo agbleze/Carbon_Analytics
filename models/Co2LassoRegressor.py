@@ -5,7 +5,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 import numpy as np
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import mean_squared_error
-from preprocess_pipeline import (linear_model_preprocess_pipeline,
+from models.preprocess_pipeline import (linear_model_preprocess_pipeline,
                                  X_train, 
                                  X_test, 
                                  y_train,
