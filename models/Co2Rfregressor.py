@@ -1,7 +1,7 @@
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import mean_squared_error, r2_score
-from preprocess_pipeline import (decision_tree_data_preprocess,
+from models.preprocess_pipeline import (decision_tree_data_preprocess,
                                  X_train, 
                                  X_test, 
                                  y_train,
