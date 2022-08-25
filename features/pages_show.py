@@ -191,38 +191,46 @@ model_description = html.Div([dcc.Markdown(""" ### Data preprocessing pipeline
                              )
 
 
-best_model_card = dbc.Card(children=[dbc.CardHeader('Best model: Hist'),
-                            dbc.CardBody(children=[dbc.Col(#lg=6, 
-                                                            children=[
-                                                                        html.H5('Root Mean Squared Error (RMSE)'),
-                                                                        html.H1('133',
-                                                                                style=model_card_style
-                                                                            ),
-                                                                    ],
+# best_model_card = dbc.Card(children=[dbc.CardHeader('Best model: Hist'),
+#                             dbc.CardBody(children=[dbc.Col(#lg=6, 
+#                                                             children=[
+#                                                                         html.H5('Root Mean Squared Error (RMSE)'),
+#                                                                         html.H1('133',
+#                                                                                 style=model_card_style
+#                                                                             ),
+#                                                                     ],
                                                             
-                                                        ), 
-                                                   html.Br(),
+#                                                         ), 
+#                                                    html.Br(),
                                           
-                                          dbc.Col(#lg=6, 
-                                                  children=[
-                                                            html.H5('Co-efficient of determination (R2)'),
-                                                            html.Div(children=html.H1('23%'),
-                                                                    style=model_card_style
-                                                                    )
-                                                        ]
-                                            )
-                                          ], 
-                                         class_name='mx-auto'
-                                         )
-                            ],
-                           color='light'
-                        )
+#                                           dbc.Col(#lg=6, 
+#                                                   children=[
+#                                                             html.H5('Co-efficient of determination (R2)'),
+#                                                             html.Div(children=html.H1('23%'),
+#                                                                     style=model_card_style
+#                                                                     )
+#                                                         ]
+#                                             )
+#                                           ], 
+#                                          class_name='mx-auto'
+#                                          )
+#                             ],
+#                            color='light'
+#                         )
 
 
 
+average_rmse_evaluated = dbc.Card([dbc.CardHeader('Average 10 fold CV RMSE'),
+                             dbc.CardBody([html.H3('Plot of RMSE of various models'),
+                                           dcc.Graph(id='id_graph_avg_cv_rmse_plot')
+                                           ]
+                                          ),
+                             dbc.CardFooter('Average of 10 CV RMSE of models')
+                             ]
+                            )
 
 
-models_evaluated = dbc.Card([dbc.CardHeader('Models evaluated'),
+models_rmse_evaluated = dbc.Card([dbc.CardHeader('Models evaluated'),
                              dbc.CardBody([html.H3('Plot of RMSE of various models'),
                                            dcc.Graph(id='id_graph_models_rmse_plot')
                                            ]
@@ -235,10 +243,10 @@ models_evaluated = dbc.Card([dbc.CardHeader('Models evaluated'),
 model_evaluation = html.Div([
     dbc.Container([html.Br(),
                    dbc.Row([dbc.Col(lg=4, 
-                                    children=[best_model_card]
+                                    children=[average_rmse_evaluated]
                                     ), 
                             dbc.Col(lg=8,
-                                    children=[models_evaluated])
+                                    children=[models_rmse_evaluated])
                             ]
                         ), 
                    dbc.Row()
