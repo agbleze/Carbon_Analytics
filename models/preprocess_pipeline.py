@@ -8,7 +8,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 
-total_emission_df = pd.read_csv(r'../data/total_emission_df.csv')
+total_emission_df = pd.read_csv(r'data/total_emission_df.csv')
 
 X_all = total_emission_df[['state_name',	'lga',	'sector',	'credit_mean',	'income_mean']]
 
