@@ -27,6 +27,10 @@ from models.models_evaluation import  plot_models_cv_test_error
 import pandas as pd
 from datar.all import case_when, f, mutate, pivot_wider
 import functools
+from models.Co2XgbrfRegressor import xgb_pipeline
+
+from models.preprocess_pipeline import (X, y
+                                        )
 
 #%%
 fuel_type_emission = pd.read_csv('data/fuel_type_emission.csv')
@@ -267,5 +271,34 @@ def plot_models_error_estimates(sidebar_button):
     
     return (cv_test_rmse_graph, avg_test_rmse)
         
+    
+@callback(Output(component_id='prediction_results', component_property='children'),
+          Input(component_id='id_state_name', component_property='value'),
+          Input(component_id='id_lga_name', component_property='value'),
+          Input(component_id='id_sector_name', component_property='value'),
+          Input(component_id='id_credit_amt', component_property='value'),
+          Input(component_id='id_income_amt', component_property='value'),
+          Input(component_id='id_predict_emission', component_property='n_clicks_timestamp')
+          )
+def make_prediction(state_selected, lga_selected, sector_selected, credit_amt, 
+                    income_amt, predict_button):
+    ctx = callback_context
+    button_clicked = ctx.triggered[0]['prop_id'].split('.')[0]
+    
+    prediction_input = [state_selected, lga_selected, sector_selected, credit_amt,
+                        income_amt]
+    
+    if ((not button_clicked) or (button_clicked != 'id_predict_emission') 
+        or (not any(prediction_input)) or (not predict_button)
+        ):
+        PreventUpdate
+    
+    xgb_pipeline.fit(X=X, y=y)
+
+    prediction = xgb_pipeline.predict([prediction_input])
+    return f'{prediction: .2f}'
+
+    
+    
     
     
