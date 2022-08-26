@@ -26,7 +26,7 @@ from features.visualization import (make_boxplot, plot_histogram, plot_bubble_ch
 from models.models_evaluation import  plot_models_cv_test_error
 import pandas as pd
 from datar.all import case_when, f, mutate, pivot_wider
-
+import functools
 
 #%%
 fuel_type_emission = pd.read_csv('data/fuel_type_emission.csv')
@@ -185,8 +185,6 @@ def render_state_emission(state_selected):
 
 
 
-
-
 #%%
 @callback(Output(component_id='id_avg_fuel_emission', component_property='children'),
           Output(component_id='id_graph_hist_fuel', component_property='figure'),
@@ -257,11 +255,17 @@ def render_sector_layout(sector_selected, sector_sidebar_button):
           Output(component_id='id_graph_models_rmse_plot', component_property='figure'),
           Input(component_id='eval_model_sidebutton', component_property='n_clicks_timestamp')
           )
+#@functools.lru_cache(maxsize=None)
 def plot_models_error_estimates(sidebar_button):
     ctx = callback_context
     button_clicked = ctx.triggered[0]['prop_id'].split('.')[0]
-    if button_clicked == 'eval_model_sidebutton':
-        model_evaluate_graphs = plot_models_cv_test_error()
+    if (not button_clicked) or (button_clicked != 'eval_model_sidebutton'):
+        PreventUpdate
+    test_rmse_graph = plot_models_cv_test_error()
+    cv_test_rmse_graph = test_rmse_graph['test_rmse']#.show()
+    avg_test_rmse = test_rmse_graph['avg_test_rmse']#.show()
+    
+    return (cv_test_rmse_graph, avg_test_rmse)
         
     
     
