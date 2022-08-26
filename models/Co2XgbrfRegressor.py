@@ -1,12 +1,14 @@
 from xgboost import XGBRFRegressor
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.model_selection import cross_validate, cross_val_score, cross_val_predict
+
 from models.preprocess_pipeline import (decision_tree_data_preprocess, 
-                                    X_train, 
-                                    X_test, 
-                                    y_train,
-                                    y_test
-                                )
+                                        X_train, 
+                                        X_test, 
+                                        y_train,
+                                        y_test
+                                        )
 
 xgb = XGBRFRegressor()
 xgb_pipeline = make_pipeline(decision_tree_data_preprocess, xgb)
