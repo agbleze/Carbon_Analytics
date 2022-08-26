@@ -222,7 +222,9 @@ model_description = html.Div([dcc.Markdown(""" ### Data preprocessing pipeline
 
 average_rmse_evaluated = dbc.Card([dbc.CardHeader('Average 10 fold CV RMSE'),
                              dbc.CardBody([html.H3('Plot of RMSE of various models'),
-                                           dcc.Graph(id='id_graph_avg_cv_rmse_plot')
+                                           dcc.Loading(type='circle',
+                                                       children=dcc.Graph(id='id_graph_avg_cv_rmse_plot')
+                                                       )
                                            ]
                                           ),
                              dbc.CardFooter('Average of 10 CV RMSE of models')
@@ -232,7 +234,9 @@ average_rmse_evaluated = dbc.Card([dbc.CardHeader('Average 10 fold CV RMSE'),
 
 models_rmse_evaluated = dbc.Card([dbc.CardHeader('Models evaluated'),
                              dbc.CardBody([html.H3('Plot of RMSE of various models'),
-                                           dcc.Graph(id='id_graph_models_rmse_plot')
+                                           dcc.Loading(type='circle',
+                                                       children=dcc.Graph(id='id_graph_models_rmse_plot')
+                                                       )
                                            ]
                                           ),
                              dbc.CardFooter('R2 of models')
@@ -240,20 +244,22 @@ models_rmse_evaluated = dbc.Card([dbc.CardHeader('Models evaluated'),
                             )
 
 
-model_evaluation = html.Div([
-    dbc.Container([html.Br(),
-                   dbc.Row([dbc.Col(lg=4, 
+model_evaluation = dbc.Container([html.Br(), #html.Div([
+                   dbc.Row([dbc.Col(#lg=6, 
                                     children=[average_rmse_evaluated]
                                     ), 
-                            dbc.Col(lg=8,
-                                    children=[models_rmse_evaluated])
+                            
                             ]
-                        ), 
-                   dbc.Row()
+                        ), html.Br(), html.Br(),  
+                   dbc.Row([dbc.Col(#lg=6,
+                                    children=[models_rmse_evaluated]
+                                    )
+                       
+                   ])
                    ]
                   )
-    ]
-)
+ #   ]
+#)
 '''
 TO DO:
 1. Sidebar
@@ -285,33 +291,39 @@ dcc.Dropdown(id='id_sector_dropdown',
             )   
     
 indicators_dropdowns = dbc.Container([dbc.Row(
-                        children=[dbc.Col([create_dropdown(id='id_state_name', colname='state_name', data=df)]
-                            ),
-                        dbc.Col([create_dropdown(id='id_lga_name', colname='lga', data=df)]),
-                        dbc.Col([create_dropdown(id='id_sector_name', colname='sector', data=df)])
-                        ]
-                    ),html.Br(), html.Br(),
-               dbc.Row(children=[dbc.Col([dcc.Input(id='id_credit_amt', type='number', 
-                                                    placeholder='select credit amount receive',
-                                                    min=df['credit_mean'].min(),
-                                                    max=df['credit_mean'].max(),
-                                                    step=10, debounce=True
-                                                    )
-                                          ]
-                                    ),
+                                                children=[dbc.Col([dbc.Label('Select name of state'),
+                                                                create_dropdown(id='id_state_name', colname='state_name', data=df)
+                                                                ]
+                                                                ),
+                                                            dbc.Col([dbc.Label('Select Local Government Area'),
+                                                                    create_dropdown(id='id_lga_name', colname='lga', data=df)]),
+                                                            dbc.Col([dbc.Label('Select sector of household'),
+                                                                    create_dropdown(id='id_sector_name', colname='sector', data=df)])
+                                                        ]
+                                            ),
+                                            html.Br(), html.Br(),
+                                dbc.Row(children=[dbc.Col(lg=4, children=[dbc.Label('Select credit amount Household receive'),
+                                                                            dcc.Input(id='id_credit_amt', type='number', 
+                                                                                        min=df['credit_mean'].min(),
+                                                                                        max=df['credit_mean'].max(),
+                                                                                        step=10, debounce=True
+                                                                                        )
+                                                                            ]
+                                                            ),
                                  
-                                dbc.Col([dcc.Input(id='id_income_amt', type='number', 
-                                                   placeholder='select income amount receive',
-                                                    min=df['income_mean'].min(),
-                                                    max=df['income_mean'].max(),
-                                                    step=10, debounce=True, 
-                                                    )
-                                          ]
+                                dbc.Col(lg=4, children=[dbc.Label('Select income amount household receive'),
+                                                        dcc.Input(id='id_income_amt', type='number',
+                                                                    min=df['income_mean'].min(),
+                                                                    max=df['income_mean'].max(),
+                                                                    step=10, debounce=True, 
+                                                                )
+                                                            ]
                                         ),
-                                dbc.Col(dbc.Button(id='id_predict_emission',
-                                                    children='Predict CO2 Emission',
-                                                    style=button_style
-                                                )
+                                dbc.Col(lg=4, children=[dbc.Button(id='id_predict_emission',
+                                                        children='Predict CO2 Emission',
+                                                        style=button_style
+                                                        )
+                                                        ]
                                         )
                                 ]
                     )
@@ -323,7 +335,7 @@ indicators_dropdowns = dbc.Container([dbc.Row(
 
 prediction_board = dbc.Card([html.Br(), html.Br(),
                              dbc.CardHeader(children=indicators_dropdowns),
-                            dbc.CardBody(children=[html.Div(html.H1('123'),
+                            dbc.CardBody(children=[html.Div(html.H1(id='prediction_results', children='123'),
                                                     style=model_card_style
                                                 )
                                             ],
