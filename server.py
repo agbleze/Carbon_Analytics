@@ -257,5 +257,11 @@ def render_sector_layout(sector_selected, sector_sidebar_button):
           Output(component_id='id_graph_models_rmse_plot', component_property='figure'),
           Input(component_id='eval_model_sidebutton', component_property='n_clicks_timestamp')
           )
-def plot_models_error_estimates():
-    pass
+def plot_models_error_estimates(sidebar_button):
+    ctx = callback_context
+    button_clicked = ctx.triggered[0]['prop_id'].split('.')[0]
+    if button_clicked == 'eval_model_sidebutton':
+        model_evaluate_graphs = plot_models_cv_test_error()
+        
+    
+    
