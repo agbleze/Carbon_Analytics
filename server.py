@@ -32,6 +32,12 @@ from models.Co2XgbrfRegressor import xgb_pipeline
 from models.preprocess_pipeline import (X, y
                                         )
 
+import joblib
+import pandas as pd
+
+#%%
+loaded_model = joblib.load("model_used.model")
+
 #%%
 fuel_type_emission = pd.read_csv('data/fuel_type_emission.csv')
 total_emission_df = pd.read_csv('data/total_emission_df.csv')
@@ -285,18 +291,57 @@ def make_prediction(state_selected, lga_selected, sector_selected, credit_amt,
     ctx = callback_context
     button_clicked = ctx.triggered[0]['prop_id'].split('.')[0]
     
-    prediction_input = [state_selected, lga_selected, sector_selected, credit_amt,
-                        income_amt]
+    # prediction_input = [state_selected, lga_selected, sector_selected, credit_amt,
+    #                     income_amt]
+    
+    
+    
+    prediction_inputs = {'state_name': state_selected, 'lga': lga_selected, 
+                         'sector': sector_selected, 'credit_mean': credit_amt, 
+                         'income_mean': income_amt
+                         }
+    prediction_inputs_df = pd.DataFrame(data=prediction_inputs, index=[0])
+
     
     if ((not button_clicked) or (button_clicked != 'id_predict_emission') 
-        or (not any(prediction_input)) or (not predict_button)
+        or (not any(prediction_inputs_df)) or (not predict_button)
         ):
         PreventUpdate
-    
-    xgb_pipeline.fit(X=X, y=y)
+        
+    if button_clicked == 'id_predict_emission':
+        
+        if not all(prediction_inputs_df):
+            PreventUpdate
+            
+            # message = ('All parameters must be provided. Either some values have not \
+            #             been provided or invalid values were provided. Please select the \
+            #            right values for all parameters from the dropdown. \
+            #             Then, click on predict clicks button to \
+            #             predict number of clicks'
+            #            )
+            # return True, message, dash.no_update
+        
+        if all(prediction_input):
+            result = loaded_model.predict([prediction_input])
+            prediction = round(result[0], 2)
+            return prediction #False, dash.no_update, prediction
+        
+        #%%
+import pandas as pd
+dat = {'state_name': 'kano', 'lga': 123, 'sector': 'RURAL', 'credit_mean': 123, 'income_mean': 120}
+input_pred = pd.DataFrame(data=dat, index=[0])
+#pd.DataFrame.from_dict(data=dat)
 
-    prediction = xgb_pipeline.predict([prediction_input])
-    return f'{prediction: .2f}'
+# %%
+xgb_pipeline.predict(input_pred)[0]
+
+
+            
+    
+    #xgb_pipeline.fit(X=X, y=y)
+
+    #prediction = xgb_pipeline.predict([prediction_input])
+    #return f'{prediction: .2f}'
 
     
     
