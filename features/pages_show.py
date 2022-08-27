@@ -5,6 +5,7 @@ from dash import dcc
 import dash_bootstrap_components as dbc
 from dash import html
 from features.helper_components import output_card, output_card_alpha
+from features.feacture_component import CardButton
 from StyleDisplay.style import button_style
 
 import pandas as pd
@@ -335,15 +336,21 @@ indicators_dropdowns = dbc.Container([dbc.Row(
 
 prediction_board = dbc.Card([html.Br(), html.Br(),
                              dbc.CardHeader(children=indicators_dropdowns),
-                            dbc.CardBody(children=[html.Div(html.H1(id='prediction_results', children='123'),
-                                                    style=model_card_style
-                                                )
-                                            ],
-                                            class_name='mx-auto'
-                                            ),
+                            # dbc.CardBody(children=[html.Div(html.H1(id='prediction_results'),
+                            #                         style=model_card_style
+                            #                     )
+                            #                 ],
+                            #                 class_name='mx-auto'
+                            #                 ),
+                            # CardButton(id_card_body='prediction_results'),
+                            output_card(id='prediction_results'),
+
                             dbc.CardFooter()
                             ]
                                )
+
+
+#CardButton(id_card_body='prediction_results')
 
 
 model_prediction_show = html.Div([dbc.Container(
