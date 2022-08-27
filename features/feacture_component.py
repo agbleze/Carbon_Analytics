@@ -4,11 +4,14 @@ from StyleDisplay.style import homepage_icon_style
 
 
 
-def CardButton(cardimg_src: str = None, cardimg_style: dict = homepage_icon_style,
-               card_title: str = 'Card Title',
+def CardButton(cardimg_src: str = None, 
+               cardimg_style: dict = homepage_icon_style,
+               id_card_body: str = 'id_card',
+               card_title: str =  None,#'Card Title',
                cardlink_href: str = "card_href",
                headstyle: dict = {"margin": "5%"},
-               card_style: dict = {"width": "18rem", "height": "18rem"}):
+               card_style: dict = {"width": "18rem", "height": "18rem"}
+               ):
     return dbc.Col(
                         [
                             dbc.Card(
@@ -22,9 +25,9 @@ def CardButton(cardimg_src: str = None, cardimg_style: dict = homepage_icon_styl
                                             dbc.CardImgOverlay(
                                                 [
                                                     dbc.CardBody(
-                                                        html.H3(
-                                                            children=card_title,
-                                                            style=headstyle,
+                                                        html.H3(id=id_card_body,
+                                                                children=card_title,
+                                                                style=headstyle,
                                                         )
                                                     )
                                                 ]
