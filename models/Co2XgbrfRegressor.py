@@ -44,9 +44,13 @@ input_pred = pd.DataFrame(data=dat, index=[0])
 #pd.DataFrame.from_dict(data=dat)
 
 # %%
-xgb_pipeline.predict(input_pred)[0]
-
-
+ldm = joblib.load('model_used.model')
+#res = xgb_pipeline.predict(input_pred)#[0]
+res = ldm.predict(input_pred)
+resn = round(res[0])
+resn
+# #%%
+# input_pred.all()
 
 
 
