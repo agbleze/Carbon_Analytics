@@ -265,7 +265,7 @@ def render_sector_layout(sector_selected, sector_sidebar_button):
           Output(component_id='id_graph_models_rmse_plot', component_property='figure'),
           Input(component_id='eval_model_sidebutton', component_property='n_clicks_timestamp')
           )
-#@functools.lru_cache(maxsize=None)
+@functools.lru_cache(maxsize=None)
 def plot_models_error_estimates(sidebar_button):
     ctx = callback_context
     button_clicked = ctx.triggered[0]['prop_id'].split('.')[0]
@@ -275,7 +275,7 @@ def plot_models_error_estimates(sidebar_button):
     cv_test_rmse_graph = test_rmse_graph['test_rmse']#.show()
     avg_test_rmse = test_rmse_graph['avg_test_rmse']#.show()
     
-    return (cv_test_rmse_graph, avg_test_rmse)
+    return (avg_test_rmse, cv_test_rmse_graph)
         
     
 @callback(Output(component_id='prediction_results', component_property='children'),
@@ -321,19 +321,19 @@ def make_prediction(state_selected, lga_selected, sector_selected, credit_amt,
             #            )
             # return True, message, dash.no_update
         
-        if all(prediction_input):
-            result = loaded_model.predict([prediction_input])
-            prediction = round(result[0], 2)
+        if all(prediction_inputs_df):
+            result = loaded_model.predict(prediction_inputs_df)[0]
+            prediction = round(result)
             return prediction #False, dash.no_update, prediction
         
         #%%
-import pandas as pd
-dat = {'state_name': 'kano', 'lga': 123, 'sector': 'RURAL', 'credit_mean': 123, 'income_mean': 120}
-input_pred = pd.DataFrame(data=dat, index=[0])
-#pd.DataFrame.from_dict(data=dat)
+# import pandas as pd
+# dat = {'state_name': 'kano', 'lga': 123, 'sector': 'RURAL', 'credit_mean': 123, 'income_mean': 120}
+# input_pred = pd.DataFrame(data=dat, index=[0])
+# #pd.DataFrame.from_dict(data=dat)
 
-# %%
-xgb_pipeline.predict(input_pred)[0]
+# # %%
+# xgb_pipeline.predict(input_pred)[0]
 
 
             
