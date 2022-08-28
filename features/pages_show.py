@@ -170,7 +170,8 @@ state_emission = dbc.Container(
     ]
 )
 
-emission_prediction_layout = html.Div([dtc.SideBar([dtc.SideBarItem(id='desc_model_sidebutton', 
+emission_prediction_layout = html.Div([dtc.SideBar([
+                                                    dtc.SideBarItem(id='desc_model_sidebutton', 
                                                                     label='Modelling process'
                                                                     ),
                                                     dtc.SideBarItem(id='eval_model_sidebutton',
@@ -181,15 +182,38 @@ emission_prediction_layout = html.Div([dtc.SideBar([dtc.SideBarItem(id='desc_mod
                                                                     )
                                                     ]
                                                    ),
-                                        html.Div(id='prediction_content')
+                                                    html.Div(id='prediction_content')
                                         ]
                                     )
 
-model_description = html.Div([dcc.Markdown(""" ### Data preprocessing pipeline
-                                           """
-                                        )
-                              ]
-                             )
+
+model_description = dbc.Container([dcc.Markdown(""" ### Data preprocessing pipeline
+                                                Different machine larning algorithmns were fitted on the data and evaluated 
+                                                using 10 fold cross validation method to determine the best model.
+                                                
+                                                Different algorithmns require some differences in preprocessing.
+                                                
+                                                1. Missing data was handled using mean imputation. Other methods of handling
+                                                 missing data may prove more useful in modelling the data This step was part 
+                                                 of the preprocessing pipeline for all algorithmns
+                                                 
+                                                2. Standardization of quantitative variables such as credit amount and income amount 
+                                                This was done for linear models such as Lasso and ridge regression
+                                                
+                                                3. One-Hot-encoding for transforming qualitative variables was undertaken for linear models 
+                                                such as Lasso and ridge regression.
+                                                
+                                                4. Ordinal encoding was used for transforming qualitative variables for decision tree 
+                                                based models
+                                                
+                                                """
+                                                )
+                                    ]
+                                )
+
+
+
+
 
 
 # best_model_card = dbc.Card(children=[dbc.CardHeader('Best model: Hist'),
@@ -261,19 +285,6 @@ model_evaluation = dbc.Container([html.Br(), #html.Div([
                   )
  #   ]
 #)
-'''
-TO DO:
-1. Sidebar
-    i. Modelling process
-    ii, Models
-
-2. Main layout   
-TO DO emission prediction:
-
-1. dot plot of models evaluations: rmse
-2. card for models evaluations: r2
-3. card for best model: rmse, r2
-'''
 
 #############################
 
@@ -513,57 +524,9 @@ analytics_sidebar = html.Div(
                     label="Fuel type",
                     icon='bi bi-diagram-3-fill'
                 ),
-                dtc.SideBarItem(id="id_5", label="Metrics", icon="fas fa-cog"),
+                #dtc.SideBarItem(id="id_5", label="Metrics", icon="fas fa-cog"),
             ]
         ),
         html.Div([], id="page_content"),
     ]
 )
-
-
-'''
-TO DO:
-1. National level emission
-
-** when component is hovered on, show number of households analyzed
-** and method of analysis
--- Avg emission (all fuel)
--- Avg emission for electricity
--- Avg emission for LPG
--- Avg emission for FIREWOOD
--- Avg emission for charcoal
--- Avg emission for petrol
--- Avg emission for diesel
--- Avg emission for kerosene
-
-II Histogram, boxplot for total emission
-bubble plot for total emission in all states
-
-
-2. State level
-
-++ select state name
-
--- Avg state emission
--- max hh emission in state
-
-III Histogram, boxplot for total state emission
-bubble plot for state based on fuel type
-
-
-3. Fuel type
-
-++ Select fuel, state
-
--- Avg state fuel type emission
--- max hh emission in state
-
-IV Histogram, boxplot for total state fuel type emission
-Bubble chart per fuel for all states
-
-
-
-
-
-
-'''
