@@ -221,39 +221,39 @@ model_description = html.Div([dcc.Markdown(""" ### Data preprocessing pipeline
 
 
 
-average_rmse_evaluated = dbc.Card([dbc.CardHeader('Average 10 fold CV RMSE'),
-                             dbc.CardBody([html.H3('Plot of RMSE of various models'),
+models_rmse_evaluated = dbc.Card([dbc.CardHeader('Evaluation of 7 Models'),
+                                    dbc.CardBody([html.H3('Boxplot of test RMSE of various models'),
+                                                dcc.Loading(type='circle',
+                                                            children=dcc.Graph(id='id_graph_models_rmse_plot')
+                                                            )
+                                                ]
+                                                ),
+                                    dbc.CardFooter('Boxplot of test RMSE for 10 fold CV of various models')
+                                ]
+                            )
+
+
+average_rmse_evaluated = dbc.Card([dbc.CardHeader('Average of 10 fold CV RMSE'),
+                             dbc.CardBody([html.H3('Average RMSE of various models'),
                                            dcc.Loading(type='circle',
                                                        children=dcc.Graph(id='id_graph_avg_cv_rmse_plot')
                                                        )
                                            ]
                                           ),
-                             dbc.CardFooter('Average of 10 CV RMSE of models')
-                             ]
-                            )
-
-
-models_rmse_evaluated = dbc.Card([dbc.CardHeader('Models evaluated'),
-                             dbc.CardBody([html.H3('Plot of RMSE of various models'),
-                                           dcc.Loading(type='circle',
-                                                       children=dcc.Graph(id='id_graph_models_rmse_plot')
-                                                       )
-                                           ]
-                                          ),
-                             dbc.CardFooter('R2 of models')
+                             dbc.CardFooter('Averages of 10 fold CV test RMSE of various models')
                              ]
                             )
 
 
 model_evaluation = dbc.Container([html.Br(), #html.Div([
                    dbc.Row([dbc.Col(#lg=6, 
-                                    children=[average_rmse_evaluated]
+                                    children=[models_rmse_evaluated]
                                     ), 
                             
                             ]
                         ), html.Br(), html.Br(),  
                    dbc.Row([dbc.Col(#lg=6,
-                                    children=[models_rmse_evaluated]
+                                    children=[average_rmse_evaluated]
                                     )
                        
                    ])
@@ -334,18 +334,24 @@ indicators_dropdowns = dbc.Container([dbc.Row(
 
 
 
-prediction_board = dbc.Card([html.Br(), html.Br(),
-                             dbc.CardHeader(children=indicators_dropdowns),
+prediction_board = dbc.Card([html.Br(), #html.Br(),
+                             dbc.CardHeader(children=indicators_dropdowns), html.Br(),
                             # dbc.CardBody(children=[html.Div(html.H1(id='prediction_results'),
                             #                         style=model_card_style
                             #                     )
                             #                 ],
                             #                 class_name='mx-auto'
                             #                 ),
-                            # CardButton(id_card_body='prediction_results'),
-                            output_card(id='prediction_results'),
+                            dbc.CardBody(
+                                        children=CardButton(id_card_body='prediction_results',
+                                                            card_style = {"width": "9rem", "height": "8rem"}
+                                                    ),
+                                        class_name='mx-auto'
+                                    ),
+                            # output_card(id='prediction_results'),
+                            html.Br(),
 
-                            dbc.CardFooter()
+                            dbc.CardFooter(id='id_prediction_describe')
                             ]
                                )
 
