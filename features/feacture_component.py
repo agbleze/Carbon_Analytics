@@ -25,7 +25,7 @@ def CardButton(cardimg_src: str = None,
                                             dbc.CardImgOverlay(
                                                 [
                                                     dbc.CardBody(
-                                                        html.H3(id=id_card_body,
+                                                        html.H1(id=id_card_body,
                                                                 children=card_title,
                                                                 style=headstyle,
                                                         )
