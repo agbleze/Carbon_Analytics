@@ -9,7 +9,8 @@ import datar.all as all
 import datar.base as base
 
 from StyleDisplay.style import (cardbody_style, 
-                                 card_icon, cardimg_style, 
+                                 card_icon, 
+                                 cardimg_style, 
                                  card_style,
                                  page_style,
                                  outputcard_style,
