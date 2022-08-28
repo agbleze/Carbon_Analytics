@@ -6,7 +6,7 @@ from StyleDisplay.style import  homepage_icon_style, page_style
 
 def create_page_with_card_button(#self,
                                  title: str = 'Climate Analytics',
-                                 card1_title:str = 'Carbon Emission Estimate',
+                                 card1_title:str = 'Carbon Emission Estimation',
                                  card2_title: str = 'Carbon Emission Prediction',
                                  card3_title: str = 'Statistical Analysis and \
                                                      Hypothesis Testing'):
