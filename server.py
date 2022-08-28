@@ -279,6 +279,7 @@ def plot_models_error_estimates(sidebar_button):
         
     
 @callback(Output(component_id='prediction_results', component_property='children'),
+          Output(component_id='id_prediction_describe', component_property='children'),
           Input(component_id='id_state_name', component_property='value'),
           Input(component_id='id_lga_name', component_property='value'),
           Input(component_id='id_sector_name', component_property='value'),
@@ -324,7 +325,9 @@ def make_prediction(state_selected, lga_selected, sector_selected, credit_amt,
         if all(prediction_inputs_df):
             result = loaded_model.predict(prediction_inputs_df)[0]
             prediction = round(result)
-            return prediction #False, dash.no_update, prediction
+            prediction_desc = f'Household with the selected characteristics is predicted to emit {prediction} kg carbon dioxide'
+            return (prediction, prediction_desc) #False, dash.no_update, prediction
+        
         
         #%%
 # import pandas as pd
