@@ -86,33 +86,33 @@ def create_page_with_card_button(#self,
                             )
                         ]
                     ),
-                    dbc.Col(
-                        [
-                            dbc.Card(
-                                [
-                                    dbc.CardImg(
-                                        style=homepage_icon_style,
-                                    ),
-                                    dbc.CardLink(
-                                        children=[
-                                            dbc.CardImgOverlay(
-                                                [
-                                                    dbc.CardBody(
-                                                        html.H3(
-                                                            children=card3_title,
-                                                            style={"margin": "5%"},
-                                                        )
-                                                    )
-                                                ]
-                                            )
-                                        ],
-                                        href="hypothesis",
-                                    ),
-                                ],
-                                style={"width": "18rem", "height": "18rem"},
-                            )
-                        ]
-                    ),
+                    # dbc.Col(
+                    #     [
+                    #         dbc.Card(
+                    #             [
+                    #                 dbc.CardImg(
+                    #                     style=homepage_icon_style,
+                    #                 ),
+                    #                 dbc.CardLink(
+                    #                     children=[
+                    #                         dbc.CardImgOverlay(
+                    #                             [
+                    #                                 dbc.CardBody(
+                    #                                     html.H3(
+                    #                                         children=card3_title,
+                    #                                         style={"margin": "5%"},
+                    #                                     )
+                    #                                 )
+                    #                             ]
+                    #                         )
+                    #                     ],
+                    #                     href="hypothesis",
+                    #                 ),
+                    #             ],
+                    #             style={"width": "18rem", "height": "18rem"},
+                    #         )
+                    #     ]
+                    # ),
                 ]
             ),
             html.Br(),
