@@ -38,9 +38,15 @@ import pandas as pd
 #%%
 loaded_model = joblib.load("model_used.model")
 
+#loaded_model = joblib.load(filename='/home/linagb/Carbon_Analytics/model_used.model')
+
 #%%
 fuel_type_emission = pd.read_csv('data/fuel_type_emission.csv')
 total_emission_df = pd.read_csv('data/total_emission_df.csv')
+
+#fuel_type_emission = pd.read_csv(r'/home/linagb/Carbon_Analytics/data/fuel_type_emission.csv')
+#total_emission_df = pd.read_csv(r'/home/linagb/Carbon_Analytics/data/total_emission_df.csv')
+
 
 fuel_type_emission_long = pd.melt(fuel_type_emission,id_vars=['state_name', 'sector', 'lga'], 
                                     value_vars=['petrol', 'kerosene','lpg', 
