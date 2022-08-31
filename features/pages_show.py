@@ -11,6 +11,8 @@ from StyleDisplay.style import button_style
 import pandas as pd
 
 df = pd.read_csv(r'data/total_emission_df.csv')
+
+#df = pd.read_csv(r'/home/linagb/Carbon_Analytics/data/total_emission_df.csv')
 #%%
 card_icon = {
     "color": "green",
@@ -377,27 +379,6 @@ model_prediction_show = html.Div([dbc.Container(
                                                 )
                                   ]
                                  )
-
-'''
-TO DO:
-PREDICTION
-
-1. Dropdowns with tooltip
-    i. state
-    ii. LGA
-    iii. sector
-    iv. credit
-    v. income state
-    vi. predict button
-    
-2. Prediction card
-    i. cardheadr : prediction of co2
-    ii. body: predict (2 d.p)
-     
-'''
-
-
-
 
 hypothesis_layout = html.Div(
     [
