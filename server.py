@@ -34,18 +34,20 @@ from models.preprocess_pipeline import (X, y
 
 import joblib
 import pandas as pd
+from PIL import Image
 
 #%%
-loaded_model = joblib.load("model_used.model")
-
-#loaded_model = joblib.load(filename='/home/linagb/Carbon_Analytics/model_used.model')
+#loaded_model = joblib.load("model_used.model")
+#img_rmse = Image.open('pic/cv_rmse.png')
+#img_avg_cv_rmse = Image.open('pic/avg_cv_rmse.png')
+loaded_model = joblib.load(filename='/home/linagb/Carbon_Analytics/model_used.model')
 
 #%%
-fuel_type_emission = pd.read_csv('data/fuel_type_emission.csv')
-total_emission_df = pd.read_csv('data/total_emission_df.csv')
+#fuel_type_emission = pd.read_csv('data/fuel_type_emission.csv')
+#total_emission_df = pd.read_csv('data/total_emission_df.csv')
 
-#fuel_type_emission = pd.read_csv(r'/home/linagb/Carbon_Analytics/data/fuel_type_emission.csv')
-#total_emission_df = pd.read_csv(r'/home/linagb/Carbon_Analytics/data/total_emission_df.csv')
+fuel_type_emission = pd.read_csv(r'/home/linagb/Carbon_Analytics/data/fuel_type_emission.csv')
+total_emission_df = pd.read_csv(r'/home/linagb/Carbon_Analytics/data/total_emission_df.csv')
 
 
 fuel_type_emission_long = pd.melt(fuel_type_emission,id_vars=['state_name', 'sector', 'lga'], 
@@ -267,21 +269,25 @@ def render_sector_layout(sector_selected, sector_sidebar_button):
 
 
 
-@callback(Output(component_id='id_graph_avg_cv_rmse_plot', component_property='figure'),
-          Output(component_id='id_graph_models_rmse_plot', component_property='figure'),
-          Input(component_id='eval_model_sidebutton', component_property='n_clicks_timestamp')
-          )
-@functools.lru_cache(maxsize=None)
-def plot_models_error_estimates(sidebar_button):
-    ctx = callback_context
-    button_clicked = ctx.triggered[0]['prop_id'].split('.')[0]
-    if (not button_clicked) or (button_clicked != 'eval_model_sidebutton'):
-        PreventUpdate
-    test_rmse_graph = plot_models_cv_test_error()
-    cv_test_rmse_graph = test_rmse_graph['test_rmse']#.show()
-    avg_test_rmse = test_rmse_graph['avg_test_rmse']#.show()
+# @callback(Output(component_id='id_graph_avg_cv_rmse_plot', component_property='figure'),
+#           Output(component_id='id_graph_models_rmse_plot', component_property='figure'),
+#           #Output(component_id='img_rmse', component_property='src'),
+#           #Output(component_id='img_avg_cv_rmse', component_property='src'),
+#           Input(component_id='eval_model_sidebutton', component_property='n_clicks_timestamp')
+#           )
+# @functools.lru_cache(maxsize=None)
+# def plot_models_error_estimates(sidebar_button):
+#     ctx = callback_context
+#     button_clicked = ctx.triggered[0]['prop_id'].split('.')[0]
+#     if (not button_clicked) or (button_clicked != 'eval_model_sidebutton'):
+#         PreventUpdate
+#     test_rmse_graph = plot_models_cv_test_error()
+#     cv_test_rmse_graph = test_rmse_graph['test_rmse']#.show()
+#     avg_test_rmse = test_rmse_graph['avg_test_rmse']#.show()
     
-    return (avg_test_rmse, cv_test_rmse_graph)
+#     return (avg_test_rmse, cv_test_rmse_graph, 
+#             #img_rmse, img_avg_cv_rmse
+#             )
         
     
 @callback(Output(component_id='prediction_results', component_property='children'),
