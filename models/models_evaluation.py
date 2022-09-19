@@ -67,7 +67,7 @@ def plot_models_cv_test_error(cv: int = 10, scoring: str ='neg_mean_squared_erro
     fig = px.box(data_frame=cv_score_test_df, x='model', y='test_RMSE', 
                  color='model',# notched=True, 
                  title=f'Test error of 10 fold cross validation on Models',
-                 template='plotly_dark'
+                 template='plotly_dark', height=700,
                  )
     #fig.show()
     
@@ -75,7 +75,7 @@ def plot_models_cv_test_error(cv: int = 10, scoring: str ='neg_mean_squared_erro
                       y='test_RMSE', color='model', symbol='model',
             labels={'test_RMSE': 'Average of 10 CV RMSE'},
             title='Average of 10 CV test RMSE for various models',
-            template='plotly_dark'
+            template='plotly_dark', height=700
             )
     fig1.update_traces(marker_size=15)
     #fig1.show()
