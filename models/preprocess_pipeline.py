@@ -1,3 +1,4 @@
+#%%
 import pandas as pd
 from sklearn.preprocessing import OrdinalEncoder, OneHotEncoder
 import numpy as np
@@ -23,6 +24,14 @@ total_emission_df[['sector_encoded', 'state_encoded', 'lga_encoded']] = encoded_
 X = total_emission_df[['state_name',	'lga',	'sector',	'credit_mean',	'income_mean']]
 y = total_emission_df['total_CO2_kg']
 
+#%%
+df_narm = total_emission_df.dropna()
+
+#%%
+df_narm.describe()
+
+
+#%%
 
 X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.3, random_state=0)
 
