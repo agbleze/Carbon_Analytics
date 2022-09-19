@@ -35,19 +35,22 @@ from models.preprocess_pipeline import (X, y
 import joblib
 import pandas as pd
 from PIL import Image
+from constant import API_URL
+from api_request_maker import request_prediction
+
 
 #%%
-#loaded_model = joblib.load("model_used.model")
+loaded_model = joblib.load("model_used.model")
 #img_rmse = Image.open('pic/cv_rmse.png')
 #img_avg_cv_rmse = Image.open('pic/avg_cv_rmse.png')
-loaded_model = joblib.load(filename='/home/linagb/Carbon_Analytics/model_used.model')
+#loaded_model = joblib.load(filename='/home/linagb/Carbon_Analytics/model_used.model')
 
 #%%
-#fuel_type_emission = pd.read_csv('data/fuel_type_emission.csv')
-#total_emission_df = pd.read_csv('data/total_emission_df.csv')
+fuel_type_emission = pd.read_csv('data/fuel_type_emission.csv')
+total_emission_df = pd.read_csv('data/total_emission_df.csv')
 
-fuel_type_emission = pd.read_csv(r'/home/linagb/Carbon_Analytics/data/fuel_type_emission.csv')
-total_emission_df = pd.read_csv(r'/home/linagb/Carbon_Analytics/data/total_emission_df.csv')
+#fuel_type_emission = pd.read_csv(r'/home/linagb/Carbon_Analytics/data/fuel_type_emission.csv')
+#total_emission_df = pd.read_csv(r'/home/linagb/Carbon_Analytics/data/total_emission_df.csv')
 
 
 fuel_type_emission_long = pd.melt(fuel_type_emission,id_vars=['state_name', 'sector', 'lga'], 
@@ -309,10 +312,15 @@ def make_prediction(state_selected, lga_selected, sector_selected, credit_amt,
     
     
     
-    prediction_inputs = {'state_name': state_selected, 'lga': lga_selected, 
-                         'sector': sector_selected, 'credit_mean': credit_amt, 
-                         'income_mean': income_amt
+    prediction_inputs = {"parameter": {'state_name': state_selected, 'lga': lga_selected, 
+                                        'sector': sector_selected, 'credit_mean': credit_amt, 
+                                        'income_mean': income_amt
+                                        }
                          }
+    
+    
+    #echo '{"parameter": {"state_name": "Bayela", "lga": 108, "sector": "RURAL", "credit_mean": 70, "income_mean": 600}}' | http POST http://127.0.0.1:8000/predict
+    
     prediction_inputs_df = pd.DataFrame(data=prediction_inputs, index=[0])
 
     
@@ -335,8 +343,9 @@ def make_prediction(state_selected, lga_selected, sector_selected, credit_amt,
             # return True, message, dash.no_update
         
         if all(prediction_inputs_df):
-            result = loaded_model.predict(prediction_inputs_df)[0]
-            prediction = round(result)
+            # result = loaded_model.predict(prediction_inputs_df)[0]
+            # prediction = round(result)
+            prediction = request_prediction(URL=API_URL, data=prediction_inputs)
             prediction_desc = f'Household with the selected characteristics is predicted to emit {prediction} kg carbon dioxide'
             return (prediction, prediction_desc) #False, dash.no_update, prediction
         
