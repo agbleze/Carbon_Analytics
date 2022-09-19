@@ -25,30 +25,30 @@ xgb_pipeline = make_pipeline(decision_tree_data_preprocess, xgb)
     
 if __name__ == '__main__':
     
-    xgb_pipeline.fit(X=X_train, y=y_train)
+    # xgb_pipeline.fit(X=X_train, y=y_train)
 
-    y_pred_xgb = xgb_pipeline.predict(X_test)
-    rmse = mean_squared_error(y_true=y_test, y_pred=y_pred_xgb, squared=False)
-    print(f'Xggbrf test rmse: {rmse}')
+    # y_pred_xgb = xgb_pipeline.predict(X_test)
+    # rmse = mean_squared_error(y_true=y_test, y_pred=y_pred_xgb, squared=False)
+    # print(f'Xggbrf test rmse: {rmse}')
     
-    joblib.dump(value=xgb_pipeline, filename='model_used.model')
+    # joblib.dump(value=xgb_pipeline, filename='model_used.model')
 
 
     #xgb_pipeline('xgb_model.py')
     
     
 #%%
-import pandas as pd
-dat = {'state_name': 'kano', 'lga': 123, 'sector': 'RURAL', 'credit_mean': 123, 'income_mean': 120}
-input_pred = pd.DataFrame(data=dat, index=[0])
-#pd.DataFrame.from_dict(data=dat)
+    import pandas as pd
+    dat = {'state_name': 'kano', 'lga': 123, 'sector': 'RURAL', 'credit_mean': 123, 'income_mean': 120}
+    input_pred = pd.DataFrame(data=dat, index=[0])
+    #pd.DataFrame.from_dict(data=dat)
 
-# %%
-ldm = joblib.load('model_used.model')
-#res = xgb_pipeline.predict(input_pred)#[0]
-res = ldm.predict(input_pred)
-resn = round(res[0])
-resn
+    # %%
+    ldm = joblib.load('model_used.model')
+    #res = xgb_pipeline.predict(input_pred)#[0]
+    res = ldm.predict(input_pred)
+    resn = round(res[0])
+    print(resn)
 # #%%
 # input_pred.all()
 
