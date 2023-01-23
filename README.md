@@ -1,2 +1,4 @@
-# Carbon_Analytics
-This projects undertakes assessment of carbon emission with a multidimensional focus to produce key data products
+# Project Description
+
+This project employs machine learning for predicting carbon emissions at household level. 
+The repo contains code for the implementation of various models and techniques. 
