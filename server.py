@@ -34,10 +34,15 @@ from models.preprocess_pipeline import (X, y
 
 import joblib
 import pandas as pd
+from PIL import Image
+from constant import API_URL
+from api_request_maker import request_prediction
+
 
 #%%
 loaded_model = joblib.load("model_used.model")
-
+#img_rmse = Image.open('pic/cv_rmse.png')
+#img_avg_cv_rmse = Image.open('pic/avg_cv_rmse.png')
 #loaded_model = joblib.load(filename='/home/linagb/Carbon_Analytics/model_used.model')
 
 #%%
@@ -267,21 +272,25 @@ def render_sector_layout(sector_selected, sector_sidebar_button):
 
 
 
-@callback(Output(component_id='id_graph_avg_cv_rmse_plot', component_property='figure'),
-          Output(component_id='id_graph_models_rmse_plot', component_property='figure'),
-          Input(component_id='eval_model_sidebutton', component_property='n_clicks_timestamp')
-          )
-@functools.lru_cache(maxsize=None)
-def plot_models_error_estimates(sidebar_button):
-    ctx = callback_context
-    button_clicked = ctx.triggered[0]['prop_id'].split('.')[0]
-    if (not button_clicked) or (button_clicked != 'eval_model_sidebutton'):
-        PreventUpdate
-    test_rmse_graph = plot_models_cv_test_error()
-    cv_test_rmse_graph = test_rmse_graph['test_rmse']#.show()
-    avg_test_rmse = test_rmse_graph['avg_test_rmse']#.show()
+# @callback(Output(component_id='id_graph_avg_cv_rmse_plot', component_property='figure'),
+#           Output(component_id='id_graph_models_rmse_plot', component_property='figure'),
+#           #Output(component_id='img_rmse', component_property='src'),
+#           #Output(component_id='img_avg_cv_rmse', component_property='src'),
+#           Input(component_id='eval_model_sidebutton', component_property='n_clicks_timestamp')
+#           )
+# @functools.lru_cache(maxsize=None)
+# def plot_models_error_estimates(sidebar_button):
+#     ctx = callback_context
+#     button_clicked = ctx.triggered[0]['prop_id'].split('.')[0]
+#     if (not button_clicked) or (button_clicked != 'eval_model_sidebutton'):
+#         PreventUpdate
+#     test_rmse_graph = plot_models_cv_test_error()
+#     cv_test_rmse_graph = test_rmse_graph['test_rmse']#.show()
+#     avg_test_rmse = test_rmse_graph['avg_test_rmse']#.show()
     
-    return (avg_test_rmse, cv_test_rmse_graph)
+#     return (avg_test_rmse, cv_test_rmse_graph, 
+#             #img_rmse, img_avg_cv_rmse
+#             )
         
     
 @callback(Output(component_id='prediction_results', component_property='children'),
@@ -303,10 +312,15 @@ def make_prediction(state_selected, lga_selected, sector_selected, credit_amt,
     
     
     
-    prediction_inputs = {'state_name': state_selected, 'lga': lga_selected, 
-                         'sector': sector_selected, 'credit_mean': credit_amt, 
-                         'income_mean': income_amt
+    prediction_inputs = {"parameter": {'state_name': state_selected, 'lga': lga_selected, 
+                                        'sector': sector_selected, 'credit_mean': credit_amt, 
+                                        'income_mean': income_amt
+                                        }
                          }
+    
+    
+    #echo '{"parameter": {"state_name": "Bayela", "lga": 108, "sector": "RURAL", "credit_mean": 70, "income_mean": 600}}' | http POST http://127.0.0.1:8000/predict
+    
     prediction_inputs_df = pd.DataFrame(data=prediction_inputs, index=[0])
 
     
@@ -329,8 +343,9 @@ def make_prediction(state_selected, lga_selected, sector_selected, credit_amt,
             # return True, message, dash.no_update
         
         if all(prediction_inputs_df):
-            result = loaded_model.predict(prediction_inputs_df)[0]
-            prediction = round(result)
+            # result = loaded_model.predict(prediction_inputs_df)[0]
+            # prediction = round(result)
+            prediction = request_prediction(URL=API_URL, data=prediction_inputs)
             prediction_desc = f'Household with the selected characteristics is predicted to emit {prediction} kg carbon dioxide'
             return (prediction, prediction_desc) #False, dash.no_update, prediction
         

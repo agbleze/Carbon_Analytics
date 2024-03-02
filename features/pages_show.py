@@ -12,6 +12,17 @@ import pandas as pd
 
 df = pd.read_csv(r'data/total_emission_df.csv')
 
+from PIL import Image
+
+#%%
+img_rmse = Image.open('pic/cv_rmse_long.png')
+img_avg_cv_rmse = Image.open('pic/avg_cv_rmse_long.png')
+
+
+#img_rmse = Image.open('/home/linagb/Carbon_Analytics/pic/cv_rmse_long.png')
+#img_avg_cv_rmse = Image.open('/home/linagb/Carbon_Analytics/pic/avg_cv_rmse_long.png')
+
+
 #df = pd.read_csv(r'/home/linagb/Carbon_Analytics/data/total_emission_df.csv')
 #%%
 card_icon = {
@@ -247,10 +258,20 @@ model_description = dbc.Container([dcc.Markdown(""" ### Data preprocessing pipel
 
 
 
-models_rmse_evaluated = dbc.Card([dbc.CardHeader('Evaluation of 7 Models'),
+models_rmse_evaluated = dbc.Card([dbc.CardHeader('Evaluation of Models'),
                                     dbc.CardBody([html.H3('Boxplot of test RMSE of various models'),
-                                                dcc.Loading(type='circle',
-                                                            children=dcc.Graph(id='id_graph_models_rmse_plot')
+                                                # dcc.Loading(type='circle',
+                                                #             children=[dcc.Graph(id='id_graph_models_rmse_plot'),
+                                                                      
+                                                #                       ]
+                                                #             ),
+                                                
+                                                dbc.CardImg(id='img_rmse',
+                                                            src=img_rmse
+                                                                #src=img_explore,
+                                                                #top=True,
+                                                                #style=homepage_icon_style,
+                                                            
                                                             )
                                                 ]
                                                 ),
@@ -261,9 +282,20 @@ models_rmse_evaluated = dbc.Card([dbc.CardHeader('Evaluation of 7 Models'),
 
 average_rmse_evaluated = dbc.Card([dbc.CardHeader('Average of 10 fold CV RMSE'),
                              dbc.CardBody([html.H3('Average RMSE of various models'),
-                                           dcc.Loading(type='circle',
-                                                       children=dcc.Graph(id='id_graph_avg_cv_rmse_plot')
-                                                       )
+                                        #    dcc.Loading(type='circle',
+                                        #                children=[dcc.Graph(id='id_graph_avg_cv_rmse_plot'),
+                                                                 
+                                        #                          ]
+                                        #                ),
+                                        
+                                            dbc.CardImg(id='img_avg_cv_rmse', 
+                                                        src=img_avg_cv_rmse
+                                            #src=img_explore,
+                                            #top=True,
+                                            #style=homepage_icon_style,
+                                        )
+                                                    
+                                           
                                            ]
                                           ),
                              dbc.CardFooter('Averages of 10 fold CV test RMSE of various models')
@@ -275,12 +307,31 @@ model_evaluation = dbc.Container([html.Br(), #html.Div([
                    dbc.Row([dbc.Col(#lg=6, 
                                     children=[models_rmse_evaluated]
                                     ), 
+                            html.Br(), html.Br(),
+                            
+                            #dbc.Col(id='img_rmse'),
+                            # dbc.Col(
+                                    dbc.CardImg(id='img_rmse'
+                                            #src=img_explore,
+                                            #top=True,
+                                            #style=homepage_icon_style,
+                                        )
+                            # )
                             
                             ]
                         ), html.Br(), html.Br(),  
                    dbc.Row([dbc.Col(#lg=6,
                                     children=[average_rmse_evaluated]
-                                    )
+                                    ),
+                            html.Br(), #html.Br(),
+                            #dbc.Col(id='img_avg_cv_rmse'),
+                            # dbc.Col(
+                                    # dbc.CardImg(id='img_avg_cv_rmse'
+                                    #         #src=img_explore,
+                                    #         #top=True,
+                                    #         #style=homepage_icon_style,
+                                    #     )
+                            # )
                        
                    ])
                    ]
